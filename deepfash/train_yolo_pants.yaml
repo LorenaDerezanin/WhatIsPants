@@ -1,0 +1,9 @@
+train: /Users/lorenaderezanin/PycharmProjects/WhatIsPants/deepfash/segm_gray/images
+val: /Users/lorenaderezanin/PycharmProjects/WhatIsPants/deepfash/segm_gray/images
+
+# number of classes
+nc: 1
+
+# class names
+names:
+- this is pants
