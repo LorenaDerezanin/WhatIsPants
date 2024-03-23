@@ -11,3 +11,7 @@ conda activate /data/gpfs-1/users/lode10_c/scratch/yolo_train/conda/whatispants
 ```bash
 pip install -r requirements.txt
 ```
+
+### TO DO:
+* random select 400 png files from segm dir
+* based on selected segm pngs - select image files from images_fullres dir that match segm png filename
