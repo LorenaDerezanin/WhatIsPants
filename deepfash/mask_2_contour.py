@@ -5,7 +5,7 @@ import numpy as np
 import supervision as sv
 
 # Load your brush labelled mask
-image = cv2.imread("segm_gray/masks/MEN-Denim-id_00000080-01_7_additional_segm.png")
+image = cv2.imread("segm/MEN-Denim-id_00000080-01_7_additional_segm.png")
 
 # Convert the image to grayscale
 gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -50,7 +50,7 @@ file_path = 'segm_gray/labels/MEN-Denim-id_00000080-01_7_additional.txt'
 with open(file_path, 'w') as file:
     file.write(formatted_contour)
 
-IMAGES_DIRECTORY_PATH = "segm_gray/images"
+IMAGES_DIRECTORY_PATH = "images"
 ANNOTATIONS_DIRECTORY_PATH = "segm_gray/labels"
 DATA_YAML_PATH = "train_yolo_pants.yaml"
 SAMPLE_SIZE = 1
