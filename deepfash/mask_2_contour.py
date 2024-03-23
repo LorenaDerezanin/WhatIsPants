@@ -2,90 +2,49 @@ import os
 import cv2
 import numpy as np
 
-import supervision as sv
+masks_dir = "segm"
 
-# Load your brush labelled mask
-image = cv2.imread("segm/MEN-Denim-id_00000080-01_7_additional_segm.png")
+# pants are marked with this light gray color in the mask files
+pants_mask_color = np.array([211, 211, 211])
 
-# Convert the image to grayscale
-gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+# load labelled mask pngs
+for mask_filename in os.listdir(masks_dir):
+    mask_file_path = os.path.join(masks_dir, mask_filename)
+    clothes_mask = cv2.imread(mask_file_path)
 
-# Define the color ranges in RGB
-# pants are labelled with 211 (light gray) in DeepFashion Multimodal dataset:
-# https://github.com/yumingj/DeepFashion-MultiModal?tab=readme-ov-file
+    # Create a boolean mask where the color of each pixel matches the pants color
+    binary_mask = np.all(clothes_mask == pants_mask_color, axis=-1)
 
-# Note: OpenCV uses BGR format, but we will use grayscale values
-light_gray_value = 211
+    # initialize empty label if no pants found
+    formatted_contour_label = ""
+    if np.any(binary_mask):
+        # Convert the boolean mask to an integer mask
+        # Multiply by 211 to change True values to 211, False values will be 0
+        pants_mask = binary_mask.astype(np.uint8) * 211
+        # find pants contours
+        contours, _ = cv2.findContours(pants_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-# Create mask for pants in grayscale, both upper and lower bounds are single values
-mask_pants = cv2.inRange(gray_image, light_gray_value, light_gray_value)
+        # select contour with max area (or iterate through all contours)
+        # example:
+        contour = max(contours, key=cv2.contourArea)
 
-# Apply the pants mask to the grayscale image
-mask = cv2.bitwise_and(gray_image, mask_pants)
+        # simplify contour
+        epsilon = 0.001 * cv2.arcLength(contour, True)
+        approx = cv2.approxPolyDP(contour, epsilon, True)
 
-# find pants contours
-contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        # convert to normalized coordinates for yolo
+        height, width = pants_mask.shape
+        normalized_contour = approx.reshape(-1, 2) / [width, height]
 
-# Now, select the contour with max area or iterate through all contours
-# For example:
-contour = max(contours, key=cv2.contourArea)
+        # convert contour array to single line string
+        formatted_contour_label = "0 " + ' '.join([f'{num:.8f}' for row in normalized_contour for num in row])
 
-# Simplify contour
-epsilon = 0.001 * cv2.arcLength(contour, True)
-approx = cv2.approxPolyDP(contour, epsilon, True)
+    contour_filename = mask_filename.replace("_segm.png", ".txt")
+    contour_file_path = os.path.join("labels", contour_filename)
 
-# Convert to normalized coordinates
-height, width = mask.shape
-normalized_contour = approx.reshape(-1, 2) / [width, height]
+    # write contour to file
+    with open(contour_file_path, 'w') as file:
+        file.write(formatted_contour_label)
 
-# Convert contour array to a single line string
-formatted_contour = "0 " + ' '.join([f'{num:.8f}' for row in normalized_contour for num in row])
-print(formatted_contour)
 
-os.makedirs("segm_gray", exist_ok=True)
-
-file_path = 'segm_gray/labels/MEN-Denim-id_00000080-01_7_additional.txt'
-
-# Open the file and write the contour
-with open(file_path, 'w') as file:
-    file.write(formatted_contour)
-
-IMAGES_DIRECTORY_PATH = "images"
-ANNOTATIONS_DIRECTORY_PATH = "segm_gray/labels"
-DATA_YAML_PATH = "train_yolo_pants.yaml"
-SAMPLE_SIZE = 1
-
-dataset = sv.DetectionDataset.from_yolo(
-    images_directory_path=IMAGES_DIRECTORY_PATH,
-    annotations_directory_path=ANNOTATIONS_DIRECTORY_PATH,
-    data_yaml_path=DATA_YAML_PATH)
-
-print(len(dataset))
-
-image_names = list(dataset.images.keys())[:SAMPLE_SIZE]
-
-mask_annotator = sv.MaskAnnotator()
-box_annotator = sv.BoxAnnotator()
-
-images = []
-for image_name in image_names:
-    image = dataset.images[image_name]
-    annotations = dataset.annotations[image_name]
-    labels = [
-        dataset.classes[class_id]
-        for class_id
-        in annotations.class_id]
-    annotates_image = mask_annotator.annotate(
-        scene=image.copy(),
-        detections=annotations)
-    annotates_image = box_annotator.annotate(
-        scene=annotates_image,
-        detections=annotations,
-        labels=labels)
-    images.append(annotates_image)
-
-SAMPLE_GRID_SIZE = (1, 1)
-SAMPLE_PLOT_SIZE = (1, 1)
-
-sv.plot_image(images[0])
 
