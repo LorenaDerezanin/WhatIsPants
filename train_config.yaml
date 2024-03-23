@@ -1,0 +1,8 @@
+train: /Users/lorenaderezanin/PycharmProjects/WhatIsPants/kaggle/working/train
+val: /Users/lorenaderezanin/PycharmProjects/WhatIsPants/kaggle/working/test
+
+# number of classes
+nc: 10
+
+# class names
+names: ['sunglass','hat','jacket','shirt','pants','shorts','skirt','dress','bag','shoe']

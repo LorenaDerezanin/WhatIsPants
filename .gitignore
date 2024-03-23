@@ -1,0 +1,13 @@
+# all models
+*.pt
+
+# all dirs with output
+distill/dataset/
+distill/images*/
+kaggle/
+
+# ide project files
+.idea/
+
+# MacOS cache files
+.DS_Store
