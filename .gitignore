@@ -5,6 +5,9 @@
 distill/dataset/
 distill/images*/
 kaggle/
+deepfash/segm/
+deepfash/segm_gray/
+deepfash/labels/
 
 # ide project files
 .idea/
