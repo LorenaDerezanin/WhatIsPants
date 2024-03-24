@@ -1,10 +1,14 @@
 # What is Pants?
 
-### setting up conda env `whatispants` in `scratch/yolo_train` dir cause work dir disk quota limited
-```bash
-conda create --prefix /.../scratch/yolo_train/conda/whatispants python=3.10
+### add banner
 
-conda activate /.../scratch/yolo_train/conda/whatispants   
+### add description
+
+### setting up conda env `whatispants` in specified `yolo_train` dir 
+```bash
+conda create --prefix /.../yolo_train/conda/whatispants python=3.10
+
+conda activate /.../yolo_train/conda/whatispants   
 ```
 
 ### install requirements in conda env
