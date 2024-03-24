@@ -4,7 +4,7 @@ import shutil
 from concurrent.futures import ThreadPoolExecutor
 
 WORKDIR = '.'
-subset_size = 60
+subset_size = 2000
 
 
 def copy_file(file, destination):
