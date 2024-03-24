@@ -10,7 +10,9 @@ deepfash/images/
 deepfash/images_fullres/
 deepfash/segm/
 deepfash/labels/
-
+deepfash/train/
+deepfash/val/
+deepfash/test/
 
 # ide project files
 .idea/

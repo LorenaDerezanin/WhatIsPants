@@ -1,5 +1,5 @@
-train: /Users/lorenaderezanin/PycharmProjects/WhatIsPants/deepfash/segm_gray/images
-val: /Users/lorenaderezanin/PycharmProjects/WhatIsPants/deepfash/segm_gray/images
+train: /Users/lorenaderezanin/PycharmProjects/WhatIsPants/deepfash/train
+val: /Users/lorenaderezanin/PycharmProjects/WhatIsPants/deepfash/val
 
 # number of classes
 nc: 1
