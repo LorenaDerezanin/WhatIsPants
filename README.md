@@ -13,5 +13,5 @@ pip install -r requirements.txt
 ```
 
 ### TO DO:
-[x] random select 2000 png files from segm dir
-[x] based on selected segm pngs - select image files from images_fullres dir that match segm png filename
+- [x] random select 2000 png files from segm dir  
+- [x] based on selected segm pngs - select image files from images_fullres dir that match segm png filename
