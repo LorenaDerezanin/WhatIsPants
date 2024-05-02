@@ -2,13 +2,30 @@ import os
 import random
 import shutil
 from concurrent.futures import ThreadPoolExecutor
+from PIL import Image
 
 WORKDIR = '.'
-subset_size = 2000
+# 1593 1594
+subset_size = 4000
 
 
 def copy_file(file, destination):
     shutil.copy2(file, destination)
+
+
+def check_and_copy(source_label_file_path, source_image_file_path, target_labels_dir, target_images_dir):
+    try:
+        with Image.open(source_image_file_path) as img:
+            if img.size != (750, 1101):
+                print(f"Skipping {source_image_file_path} due to resolution mismatch: {img.size}")
+                return
+    except IOError:
+        print(f"Failed to open image {source_image_file_path}")
+        return
+
+    # If resolution is correct, proceed to copy files
+    copy_file(source_label_file_path, target_labels_dir)
+    copy_file(source_image_file_path, target_images_dir)
 
 
 labels_source_dir = os.path.join(WORKDIR, 'labels')
@@ -63,5 +80,6 @@ with ThreadPoolExecutor(max_workers=10) as executor:
         target_labels_dir = os.path.join(target_dir, 'labels')
         target_images_dir = os.path.join(target_dir, 'images')
 
-        executor.submit(copy_file, source_label_file_path, target_labels_dir)
-        executor.submit(copy_file, source_image_file_path, target_images_dir)
+        # Submit the task to executor
+        executor.submit(check_and_copy, source_label_file_path, source_image_file_path, target_labels_dir,
+                        target_images_dir)
