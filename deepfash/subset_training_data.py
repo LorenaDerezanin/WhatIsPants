@@ -5,8 +5,8 @@ from concurrent.futures import ThreadPoolExecutor
 from PIL import Image
 
 WORKDIR = '.'
-# 1593 1594
-subset_size = 4000
+# 12702 is the full set of available lables
+subset_size = 12702
 
 
 def copy_file(file, destination):
