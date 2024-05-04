@@ -2,8 +2,8 @@ import supervision as sv
 
 
 # inspect annotated image
-IMAGES_DIRECTORY_PATH = "images"
-ANNOTATIONS_DIRECTORY_PATH = "labels"
+IMAGES_DIRECTORY_PATH = "train/images"
+ANNOTATIONS_DIRECTORY_PATH = "train/labels"
 DATA_YAML_PATH = "train_yolo_pants.yaml"
 SAMPLE_SIZE = 16
 
@@ -17,7 +17,8 @@ print(len(dataset))
 image_names = list(dataset.images.keys())[:SAMPLE_SIZE]
 
 mask_annotator = sv.MaskAnnotator()
-box_annotator = sv.BoxAnnotator()
+label_annotator = sv.LabelAnnotator()
+box_annotator = sv.BoundingBoxAnnotator()
 
 images = []
 for image_name in image_names:
@@ -31,6 +32,9 @@ for image_name in image_names:
         scene=image.copy(),
         detections=annotations)
     annotates_image = box_annotator.annotate(
+        scene=annotates_image,
+        detections=annotations)
+    annotates_image = label_annotator.annotate(
         scene=annotates_image,
         detections=annotations,
         labels=labels)
