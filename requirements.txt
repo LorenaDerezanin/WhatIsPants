@@ -1,4 +1,3 @@
-ultralytics
-tqdm
+ultralytics==8.2.8
 supervision==0.20.0
-roboflow
+roboflow==1.1.28
