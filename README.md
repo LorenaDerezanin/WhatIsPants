@@ -16,7 +16,15 @@ conda activate /.../yolo_train/conda/whatispants
 pip install -r requirements.txt
 ```
 
+## After training, to run segmentation inference:
+Get the trained model file `best.pt` from the training output, and
+then run
+```bash
+yolo segment predict model=best.pt source='test_images/*'
+```
+
 ### TO DO:
+- [x] run yolo on cluster (yolov8l-seg.pt used)
 - [x] find bug in mask2contour - pants are found but not there, color issue?
   - faulty file: WOMEN-Blouses_Shirts-id_00001443-01_4_full_segm.png
 - [x] random select 2000 png files from segm dir  
