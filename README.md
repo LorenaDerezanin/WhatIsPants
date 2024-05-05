@@ -24,7 +24,8 @@ yolo segment predict model=best.pt source='test_images/*'
 ```
 
 ### TO DO:
-- [x] run yolo on cluster (yolov8l-seg.pt used)
+- [x] run yolo small and xl model (epochs: 5, 20, 50, 100)
+- [x] run yolo test run (yolov8l-seg.pt used)
 - [x] find bug in mask2contour - pants are found but not there, color issue?
   - faulty file: WOMEN-Blouses_Shirts-id_00001443-01_4_full_segm.png
 - [x] random select 2000 png files from segm dir  
