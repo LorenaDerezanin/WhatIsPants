@@ -13,6 +13,7 @@ deepfash/labels/
 deepfash/train/
 deepfash/val/
 deepfash/test/
+predictions/
 
 # ide project files
 .idea/
