@@ -14,6 +14,7 @@ deepfash/train/
 deepfash/val/
 deepfash/test/
 predictions/
+trains/
 
 # ide project files
 .idea/
