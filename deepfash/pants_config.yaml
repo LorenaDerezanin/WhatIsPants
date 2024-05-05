@@ -1,1 +1,15 @@
+# This doesn't do jack in training, since augmentation is on by default
 augment: True
+degrees: 180
+# Shears the image by a specified degree, mimicking the effect of objects being viewed from different angles.
+shear: 180
+perspective: 0.001
+# Flips the image channels from RGB to BGR with the specified probability,
+# useful for increasing robustness to incorrect channel ordering.
+bgr: 0.1
+# Blends two images and their labels, creating a composite image.
+# Enhances the model's ability to generalize by introducing label noise and visual variability.
+mixup: 0.1
+# Copies objects from one image and pastes them onto another,
+# useful for increasing object instances and learning object occlusion.
+copy_paste: 0.1
