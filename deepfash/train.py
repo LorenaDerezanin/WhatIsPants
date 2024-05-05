@@ -17,6 +17,6 @@ print(
 
 # train custom model
 print(f"Training on {args.epochs} epochs")
-model = YOLO("yolov8l-seg.pt")
+model = YOLO("yolov8x-seg.pt")
 model.train(data='train_yolo_pants.yaml', epochs=args.epochs)
 print("done")
