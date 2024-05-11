@@ -8,15 +8,13 @@
 #     └── lvis  ← downloads here (20.1 GB)
 
 # Train/val/test sets as 1) dir: path/to/imgs, 2) file: path/to/imgs.txt, or 3) list: [path/to/imgs1, path/to/imgs2, ..]
-path: ../datasets/lvis # dataset root dir
-train: train.txt # train images (relative to 'path') 100170 images
-val: val.txt # val images (relative to 'path') 19809 images
-minival: minival.txt # minval images (relative to 'path') 5000 images
+path: /Users/lorenaderezanin/PycharmProjects/WhatIsPants/datasets/lvis_pants # dataset root dir
+train: images/train2017 # train images (relative to 'path') 100170 images
+val: images/val2017 # val images (relative to 'path') 19809 images
+#minival: minival.txt # minval images (relative to 'path') 5000 images
 
 names:
-  950: this is pants
-  1039: this is pants
-  1121: this is pants
+  0: this is pants
 
 # Download script/URL (optional)
 download: |
