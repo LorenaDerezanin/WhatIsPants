@@ -2,9 +2,9 @@ import supervision as sv
 
 
 # inspect annotated image
-IMAGES_DIRECTORY_PATH = "train/images"
-ANNOTATIONS_DIRECTORY_PATH = "train/labels"
-DATA_YAML_PATH = "train_yolo_pants.yaml"
+IMAGES_DIRECTORY_PATH = "../datasets/lvis_pants/images/train2017"
+ANNOTATIONS_DIRECTORY_PATH = "../datasets/lvis_pants/labels/train2017"
+DATA_YAML_PATH = "../lvis.yaml"
 SAMPLE_SIZE = 16
 
 dataset = sv.DetectionDataset.from_yolo(
