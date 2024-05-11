@@ -6,15 +6,16 @@
 
 ### setting up conda env `whatispants` in specified `yolo_train` dir 
 ```bash
-conda create --prefix /.../yolo_train/conda/whatispants python=3.10
+conda create --prefix /.../yolo_train/conda/whatispants python=3.12
 
 conda activate /.../yolo_train/conda/whatispants   
 ```
 
 ### install requirements in conda env
 ```bash
-pip install -r requirements.txt
+pip install -r requirements.txt --no-cache-dir
 ```
+
 
 ## After training, to run segmentation inference:
 Get the trained model file `best.pt` from the training output, and
