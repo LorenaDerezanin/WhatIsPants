@@ -2,9 +2,9 @@ import supervision as sv
 
 
 # inspect annotated image
-IMAGES_DIRECTORY_PATH = "../datasets/lvis_pants/images/train2017"
-ANNOTATIONS_DIRECTORY_PATH = "../datasets/lvis_pants/labels/train2017"
-DATA_YAML_PATH = "../lvis.yaml"
+IMAGES_DIRECTORY_PATH = "datasets/lvis_pants/images/train2017"
+ANNOTATIONS_DIRECTORY_PATH = "datasets/lvis_pants/labels/train2017"
+DATA_YAML_PATH = "lvis.yaml"
 SAMPLE_SIZE = 16
 
 dataset = sv.DetectionDataset.from_yolo(
@@ -14,6 +14,10 @@ dataset = sv.DetectionDataset.from_yolo(
 
 print(len(dataset))
 
+# Note: this will include images for which no label files exist
+# This is not easy to filter out, because there's also many images
+# for which there are label files, but contain no labels, so both
+# appear as empty annotations.
 image_names = list(dataset.images.keys())[:SAMPLE_SIZE]
 
 mask_annotator = sv.MaskAnnotator()
