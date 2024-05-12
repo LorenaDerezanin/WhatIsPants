@@ -18,8 +18,10 @@ trains/
 datasets/
 scratch/
 
+
 # ide project files
 .idea/
+.ipynb_checkpoints/
 
 # MacOS cache files
 .DS_Store
