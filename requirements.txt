@@ -4,3 +4,4 @@ roboflow==1.1.28
 tensorflow==2.16.1
 tensorboard==2.16.2
 protobuf==4.25.3
+jupytext==1.16.2
