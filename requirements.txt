@@ -1,4 +1,4 @@
-ultralytics==8.2.8
+ultralytics==8.2.13
 supervision==0.20.0
 roboflow==1.1.28
 tensorflow==2.16.1
