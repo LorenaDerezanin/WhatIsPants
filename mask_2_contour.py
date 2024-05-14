@@ -3,8 +3,8 @@ import cv2
 import numpy as np
 from concurrent.futures import ThreadPoolExecutor
 
-masks_dir = "segm"
-labels_dir = "labels"
+masks_dir = "datasets/deepfashion/segm"
+labels_dir = "datasets/deepfashion/labels"
 
 # pants are marked with this light gray color in the mask files
 pants_mask_color = np.array([211, 211, 211])
