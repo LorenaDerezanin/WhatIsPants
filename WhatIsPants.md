@@ -15,13 +15,16 @@ jupyter:
 
 # What is pants?
 
-```python
-Description of the project idea, YOLO used
-```
+
+We've started this project to understand how segmentation models work. Identifying and segmenting pants in an image is a fairly easy task for us humans — we can do it with almost 100% accuracy. But how well can machines do it?
+To answer this existential question, we decided to train a segmentation model and run some predictions. Our first choice was the Ultralytics YOLOv8 segmentation model, as it's well-documented, open-source, and frankly, looks quite promising.
+
+
 
 ## Setting up Google Colab env
 
 ```python
+# clone the repo
 !git clone https://github.com/LorenaDerezanin/WhatIsPants.git
 !cd WhatIsPants
 ```
@@ -35,11 +38,11 @@ Description of the project idea, YOLO used
 ## Prepare dataset
 
 
-Deep Fashion MultiModal dataset was used: https://github.com/yumingj/DeepFashion-MultiModal
-- from 44,096 jpg images, 12,701 are annotated (classes, segmentation masks and bounding boxes)
+As our initial dataset we used a Deep Fashion MultiModal dataset: https://github.com/yumingj/DeepFashion-MultiModal    
+    * from 44,096 jpg images, 12,701 are annotated (classes, segmentation masks and bounding boxes)
 
 ```python
-# Download image files
+# download image files
 !wget --header 'Host: drive.usercontent.google.com' \
   --header 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8' \
   --header 'Accept-Language: en-US,en;q=0.5' \
@@ -52,7 +55,7 @@ Deep Fashion MultiModal dataset was used: https://github.com/yumingj/DeepFashion
 ```
 
 ```python
-# Download annotation labels
+# download annotation labels
 !wget --header 'Host: drive.usercontent.google.com' \
   --header 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8' \
   --header 'Accept-Language: en-US,en;q=0.5' \
@@ -67,7 +70,30 @@ Deep Fashion MultiModal dataset was used: https://github.com/yumingj/DeepFashion
 ### Convert masks to contours format that YOLO can process
 
 ```python
-!python mask_2_contour.py
+# import modules
+import os
+import cv2
+import numpy as np
+from concurrent.futures import ThreadPoolExecutor
+
+# define directories
+masks_dir = "datasets/deepfashion/segm"
+labels_dir = "datasets/deepfashion/labels"
+
+# define the mask color for pants
+# pants are marked with a light gray color in mask files
+pants_mask_color = np.array([211, 211, 211])
+
+# import the mask2contour function 
+from mask2contour import mask2contour
+
+# load labelled mask pngs
+# use ThreadPoolExecutor to parallelize processing
+with ThreadPoolExecutor(max_workers=10) as executor:
+    for mask_filename in os.listdir(masks_dir):
+        executor.submit(mask2contour, mask_filename, masks_dir, labels_dir, pants_mask_color)
+
+
 ```
 
 ## Subset data into training, validation and test sets
