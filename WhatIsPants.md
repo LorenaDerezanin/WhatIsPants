@@ -88,7 +88,7 @@ pants_mask_color = np.array([211, 211, 211])
 from mask2contour import mask2contour
 
 # load labelled mask pngs
-# use ThreadPoolExecutor to parallelize processing
+# parallelize processing
 with ThreadPoolExecutor(max_workers=10) as executor:
     for mask_filename in os.listdir(masks_dir):
         executor.submit(mask2contour, mask_filename, masks_dir, labels_dir, pants_mask_color)
@@ -104,7 +104,21 @@ Dataset containg all 12,701 labelled images was split into:
     * test 10%   
 
 ```python
-!python subset_training_data.py
+# import  modules
+import os
+from subset_training_data import setup_dirs, copy_files_in_parallel
+
+# define working directory and subset size
+WORKDIR = '.'
+subset_size = 12702
+
+# setup directories
+dirs = setup_dirs(WORKDIR, subset_size)
+labels_source_dir, images_source_dir, train_dir, val_dir, test_dir, num_train_labels, num_val_labels, num_test_labels = dirs
+
+# Copy files in parallel
+copy_files_in_parallel(labels_source_dir, images_source_dir, train_dir, val_dir, test_dir, num_train_labels, num_val_labels, num_test_labels, subset_size)
+
 ```
 
 ### Inspect annotations by printing 4x4 set of labelled images
