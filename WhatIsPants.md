@@ -104,7 +104,6 @@ Dataset containg all 12,701 labelled images was split into:
     * test 10%   
 
 ```python
-# import  modules
 import os
 from subset_training_data import setup_dirs, copy_files_in_parallel
 
@@ -116,7 +115,7 @@ subset_size = 12702
 dirs = setup_dirs(WORKDIR, subset_size)
 labels_source_dir, images_source_dir, train_dir, val_dir, test_dir, num_train_labels, num_val_labels, num_test_labels = dirs
 
-# Copy files in parallel
+# copy files in parallel
 copy_files_in_parallel(labels_source_dir, images_source_dir, train_dir, val_dir, test_dir, num_train_labels, num_val_labels, num_test_labels, subset_size)
 
 ```
@@ -124,7 +123,30 @@ copy_files_in_parallel(labels_source_dir, images_source_dir, train_dir, val_dir,
 ### Inspect annotations by printing 4x4 set of labelled images
 
 ```python
-!python inspect_annotations.py
+import supervision as sv
+from inspect_annotations import load_and_annotate_images, plot_image_grid
+
+# define images, labels and yaml paths, and sample size
+IMAGES_DIRECTORY_PATH = "datasets/lvis_pants/images/train2017"
+ANNOTATIONS_DIRECTORY_PATH = "datasets/lvis_pants/labels/train2017"
+DATA_YAML_PATH = "lvis.yaml"
+SAMPLE_SIZE = 16
+
+# load and annotate images
+images, image_names = load_and_annotate_images(
+    images_directory_path=IMAGES_DIRECTORY_PATH,
+    annotations_directory_path=ANNOTATIONS_DIRECTORY_PATH,
+    data_yaml_path=DATA_YAML_PATH,
+    sample_size=SAMPLE_SIZE
+)
+
+# plot images grid
+plot_image_grid(
+    images=images,
+    titles=image_names,
+    grid_size=(4, 4),
+    size=(16, 16)
+)
 ```
 
 ## Find and prepare a more diverse dataset
