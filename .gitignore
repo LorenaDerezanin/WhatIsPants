@@ -25,3 +25,5 @@ scratch/
 
 # MacOS cache files
 .DS_Store
+
+*.zip

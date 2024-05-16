@@ -158,20 +158,33 @@ cp -r ~/datasets/lvis/images datasets/lvis_pants/
 ### Subset only pants labels
 
 ```python
-# subset training set 
-python subset_lvis_pants_labels.py \
-  --source_directory "datasets/lvis/labels/train2017/" \
-  --target_directory "datasets/lvis_pants/labels/train2017/"
+import os
+import subprocess
+from subset_lvis_pants_labels import subset_labels
 
-# subset validation set
-python subset_lvis_pants_labels.py \
-  --source_directory "datasets/lvis/labels/val2017/" \
-  --target_directory "datasets/lvis_pants/labels/val2017/"
+# define source and target dirs for training and validation sets
+train_source_directory = "datasets/lvis/labels/train2017/"
+train_target_directory = "datasets/lvis_pants/labels/train2017/"
+val_source_directory = "datasets/lvis/labels/val2017/"
+val_target_directory = "datasets/lvis_pants/labels/val2017/"
+
+# subset the training set
+subset_labels(train_source_directory, train_target_directory)
+
+# subset the validation set
+subset_labels(val_source_directory, val_target_directory)
 
 # check number of resulting non-empty labels
-# it should be 4462 train and 184 val
-find datasets/lvis_pants/labels/train2017 -type f -size +0c | wc -l 
-find datasets/lvis_pants/labels/val2017 -type f -size +0c | wc -l
+def count_non_empty_files(directory):
+    result = subprocess.run(['find', directory, '-type', 'f', '-size', '+0c', '|', 'wc', '-l'], capture_output=True, text=True, shell=True)
+    return int(result.stdout.strip())
+
+train_count = count_non_empty_files(train_target_directory)
+val_count = count_non_empty_files(val_target_directory)
+
+print(f"Number of non-empty label files in training set: {train_count}")
+print(f"Number of non-empty label files in validation set: {val_count}")
+
 ```
 
 ### Keep only as many pantsless images as there are pantsful images
