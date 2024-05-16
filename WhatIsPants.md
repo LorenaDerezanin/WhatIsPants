@@ -190,15 +190,30 @@ print(f"Number of non-empty label files in validation set: {val_count}")
 ### Keep only as many pantsless images as there are pantsful images
 
 ```python
+from remove_superfluous_empty_labels import remove_empty_labels
+
+# define dirs for training and validation sets
+train_labels_directory = "datasets/lvis_pants/labels/train2017"
+train_images_directory = "datasets/lvis_pants/images/train2017"
+val_labels_directory = "datasets/lvis_pants/labels/val2017"
+val_images_directory = "datasets/lvis_pants/images/val2017"
+
 # remove empty labels in training set
-python remove_superfluous_empty_labels.py \
-  --labels_directory datasets/lvis_pants/labels/train2017 \
-  --images_directory datasets/lvis_pants/images/train2017
-  
-# rm empty lables in validation set
-python remove_superfluous_empty_labels.py \
-  --labels_directory datasets/lvis_pants/labels/val2017 \
-  --images_directory datasets/lvis_pants/images/val2017
+remove_empty_labels(train_labels_directory, train_images_directory)
+
+# remove empty labels in validation set
+remove_empty_labels(val_labels_directory, val_images_directory)
+
+# verify removal by counting remaining label files
+def count_files(directory):
+    return len([f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))])
+
+train_label_count = count_files(train_labels_directory)
+val_label_count = count_files(val_labels_directory)
+
+print(f"Number of label files in training set after removal: {train_label_count}")
+print(f"Number of label files in validation set after removal: {val_label_count}")
+
 ```
 
 ### Remove images which have no corresponding label file
