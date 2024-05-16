@@ -221,24 +221,34 @@ print(f"Number of label files in validation set after removal: {val_label_count}
 We observed that the LVIS dataset contains images with pants where pants are not annotated. For example: 000000096670.jpg shows a baseball player, and the labels include a baseball, a home base, a bat, and a belt, but no pants.
 
 ```python
-# rm images without labels in training set
-python delete_labelless_images.py \
-  --images_directory datasets/lvis_pants/images/train2017 \
-  --labels_directory datasets/lvis_pants/labels/train2017
+# Assuming delete_labelless_images.py is in the same directory or properly installed in Python's path
+from delete_labelless_images import delete_unlabeled_images
 
-# rm labelles images in validation set
-python delete_labelless_images.py \
-  --images_directory datasets/lvis_pants/images/val2017 \
-  --labels_directory datasets/lvis_pants/labels/val2017
+# Define the directories
+images_dir = 'datasets/lvis_pants/images/train2017'
+labels_dir = 'datasets/lvis_pants/labels/train2017'
+
+# Call the function and get the count of deleted files
+deleted_files_count = delete_unlabeled_images(images_dir, labels_dir)
+print(f"Total deleted images: {deleted_files_count}")
 ```
 
 ### Prepare `train` configuration yaml file 
 
-We kept only one category in the config yaml (0: This is pants) and removed other categories.
+We kept only one category in the config yaml (0: This is pants) and removed other categories.   
+Tensorboard set to `true` in yaml to monitor model training and validation performance.
 
 
 ## Run the training
 
+We ran multiple training runs with diffferent configurations:   
+    * yolo model sizes: s, m, x    
+    * number of epochs: 5, 50, 100    
+    * total number of runs: 9    
+    
+We found that the precision and recall reached a plateau both in train and val stages around 50th epoch and remained fairly stable until 100th epoch. Model size s performed a bit more poorly than the larger models.   
+Comparing the same metrics between model sizes m and x for the same number of epochs was only marginally higher for the larger model x.    
+Based on these metrics, we concluded that yolo model size m with 50 epochs is an optimal strategy for this task.   
 
 ```python
 # import train function
@@ -251,5 +261,12 @@ YAML = 'lvis_fash.yaml'
 
 # train YOLO model
 train_yolo_model(epochs=EPOCHS, size=SIZE, yaml=YAML)
+```
 
+### Test the model 
+
+We used a prepared test set to run inferences with our new model.
+
+```python
+yolo segment predict model=best.pt source='dataset/test_images/*'
 ```
