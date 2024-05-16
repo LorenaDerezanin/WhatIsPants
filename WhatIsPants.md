@@ -17,7 +17,7 @@ jupyter:
 
 
 We've started this project to understand how segmentation models work. Identifying and segmenting pants in an image is a fairly easy task for us humans — we can do it with almost 100% accuracy. But how well can machines do it?
-To answer this existential question, we decided to train a segmentation model and run some predictions. Our first choice was the Ultralytics YOLOv8 segmentation model, as it's well-documented, open-source, and frankly, looks quite promising.
+To answer this existential question, we decided to train a segmentation model and run some predictions. Our first choice was the Ultralytics YOLOv8 segmentation model, because it's well-documented, open-source, and frankly, looks quite promising.
 
 
 
@@ -44,39 +44,36 @@ As our initial dataset we used a Deep Fashion MultiModal dataset: https://github
 ```python
 # download image files
 !wget --header 'Host: drive.usercontent.google.com' \
-  --header 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8' \
-  --header 'Accept-Language: en-US,en;q=0.5' \
   --header 'Upgrade-Insecure-Requests: 1' \
   --header 'Sec-Fetch-Dest: document' \
   --header 'Sec-Fetch-Mode: navigate' \
   --header 'Sec-Fetch-Site: cross-site' \
-  --header 'Sec-Fetch-User: ?1' 'https://drive.usercontent.google.com/download?id=1U2PljA7NE57jcSSzPs21ZurdIPXdYZtN&export=download&authuser=0&confirm=t&uuid=115a0cd6-8ddb-427b-9343-62b76c4d939c&at=APZUnTWiXg4LlG3A7QPA5DmjASX8%3A1715537567680' \
+  --header 'Sec-Fetch-User: ?1' \
+  'https://drive.usercontent.google.com/download?id=1U2PljA7NE57jcSSzPs21ZurdIPXdYZtN&export=download&authuser=0&confirm=t&uuid=115a0cd6-8ddb-427b-9343-62b76c4d939c&at=APZUnTWiXg4LlG3A7QPA5DmjASX8%3A1715537567680' \
   --output-document 'images.zip'
 ```
 
 ```python
 # download annotation labels
 !wget --header 'Host: drive.usercontent.google.com' \
-  --header 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8' \
-  --header 'Accept-Language: en-US,en;q=0.5' \
   --header 'Upgrade-Insecure-Requests: 1' \
   --header 'Sec-Fetch-Dest: document' \
   --header 'Sec-Fetch-Mode: navigate' \
   --header 'Sec-Fetch-Site: cross-site' \
-  --header 'Sec-Fetch-User: ?1' 'https://drive.usercontent.google.com/download?id=1r-5t-VgDaAQidZLVgWtguaG7DvMoyUv9&export=download&authuser=0&confirm=t&uuid=b445e6d2-634c-4b59-96c8-4455c6f117a5&at=APZUnTV7OltdPbT0OB1lUK1FhJO8%3A1715537716467' \
+  --header 'Sec-Fetch-User: ?1'\
+  'https://drive.usercontent.google.com/download?id=1r-5t-VgDaAQidZLVgWtguaG7DvMoyUv9&export=download&authuser=0&confirm=t&uuid=b445e6d2-634c-4b59-96c8-4455c6f117a5&at=APZUnTV7OltdPbT0OB1lUK1FhJO8%3A1715537716467' \
   --output-document 'segm.zip'
 ```
 
 ### Convert masks to contours format that YOLO can process
 
 ```python
-# import modules
-import os
-import cv2
 import numpy as np
 from concurrent.futures import ThreadPoolExecutor
 
-# define directories
+# import the mask2contour function 
+from mask2contour import mask2contour
+
 masks_dir = "datasets/deepfashion/segm"
 labels_dir = "datasets/deepfashion/labels"
 
@@ -84,16 +81,11 @@ labels_dir = "datasets/deepfashion/labels"
 # pants are marked with a light gray color in mask files
 pants_mask_color = np.array([211, 211, 211])
 
-# import the mask2contour function 
-from mask2contour import mask2contour
-
 # load labelled mask pngs
 # parallelize processing
 with ThreadPoolExecutor(max_workers=10) as executor:
     for mask_filename in os.listdir(masks_dir):
         executor.submit(mask2contour, mask_filename, masks_dir, labels_dir, pants_mask_color)
-
-
 ```
 
 ## Subset data into training, validation and test sets
@@ -109,7 +101,7 @@ from subset_training_data import setup_dirs, copy_files_in_parallel
 
 # define working directory and subset size
 WORKDIR = '.'
-subset_size = 12702
+subset_size = 12701
 
 # setup directories
 dirs = setup_dirs(WORKDIR, subset_size)
@@ -151,8 +143,10 @@ plot_image_grid(
 
 ## Find and prepare a more diverse dataset
 
-To enrich a very uniform initial data set, it was supplemented with LVIS (Large Vocabulary Instance Segmentation) dataset: https://www.lvisdataset.org/dataset   
-to create a more diverse set and prevent overfitting.
+After a few training and test runs, we noticed that our model is overfitting and not generalizing well.   
+To enrich a very uniform initial dataset, we supplemented it with LVIS (Large Vocabulary Instance Segmentation) dataset: https://www.lvisdataset.org/dataset   
+to create a more diverse set and prevent overfitting.  
+* LVIS is based on the COC0 2017 train, val and test image sets (~160k images with ~2M instance annotations, and 1203 categories).
 
 
 ### Copy LVIS images into dir to be subsetted
@@ -164,18 +158,18 @@ cp -r ~/datasets/lvis/images datasets/lvis_pants/
 ### Subset only pants labels
 
 ```python
-# Training set 
+# subset training set 
 python subset_lvis_pants_labels.py \
-  --source_directory "$HOME/datasets/lvis/labels/train2017/" \
+  --source_directory "datasets/lvis/labels/train2017/" \
   --target_directory "datasets/lvis_pants/labels/train2017/"
 
-# Validation set
+# subset validation set
 python subset_lvis_pants_labels.py \
-  --source_directory "$HOME/datasets/lvis/labels/val2017/" \
+  --source_directory "datasets/lvis/labels/val2017/" \
   --target_directory "datasets/lvis_pants/labels/val2017/"
 
-# Check number of resulting non-empty labels
-# Should be 4462 train and 184 val
+# check number of resulting non-empty labels
+# it should be 4462 train and 184 val
 find datasets/lvis_pants/labels/train2017 -type f -size +0c | wc -l 
 find datasets/lvis_pants/labels/val2017 -type f -size +0c | wc -l
 ```
@@ -183,12 +177,12 @@ find datasets/lvis_pants/labels/val2017 -type f -size +0c | wc -l
 ### Keep only as many pantsless images as there are pantsful images
 
 ```python
-# Training set
+# remove empty labels in training set
 python remove_superfluous_empty_labels.py \
   --labels_directory datasets/lvis_pants/labels/train2017 \
   --images_directory datasets/lvis_pants/images/train2017
   
-# Validation set
+# rm empty lables in validation set
 python remove_superfluous_empty_labels.py \
   --labels_directory datasets/lvis_pants/labels/val2017 \
   --images_directory datasets/lvis_pants/images/val2017
@@ -199,12 +193,12 @@ python remove_superfluous_empty_labels.py \
 We observed that the LVIS dataset contains images with pants where pants are not annotated. For example: 000000096670.jpg shows a baseball player, and the labels include a baseball, a home base, a bat, and a belt, but no pants.
 
 ```python
-# Training set
+# rm images without labels in training set
 python delete_labelless_images.py \
   --images_directory datasets/lvis_pants/images/train2017 \
   --labels_directory datasets/lvis_pants/labels/train2017
 
-# Validation set
+# rm labelles images in validation set
 python delete_labelless_images.py \
   --images_directory datasets/lvis_pants/images/val2017 \
   --labels_directory datasets/lvis_pants/labels/val2017
@@ -212,25 +206,22 @@ python delete_labelless_images.py \
 
 ### Prepare `train` configuration yaml file 
 
-```python
-tensorboard: True
+We kept only one category in the config yaml (0: This is pants) and removed other categories.
 
-# Train/val/test sets as 1) dir: path/to/imgs, 2) file: path/to/imgs.txt, or 3) list: [path/to/imgs1, path/to/imgs2, ..]
-path: /Users/lorenaderezanin/PycharmProjects/WhatIsPants/datasets/lvis_pants # dataset root dir
-train: images/train2017 # train images (relative to 'path') 100170 images
-val: images/val2017 # val images (relative to 'path') 19809 images
-
-names:
-  0: This is pants
-```
 
 ## Run the training
 
 
 ```python
-!python lvis_yolo_train.py 50
-```
+# import train function
+from lvis_yolo_train import train_yolo_model
 
-```python
-### 
+# define parameters
+EPOCHS = 50
+SIZE = 'm'
+YAML = 'lvis_fash.yaml'
+
+# train YOLO model
+train_yolo_model(epochs=EPOCHS, size=SIZE, yaml=YAML)
+
 ```
