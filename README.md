@@ -6,7 +6,7 @@
 
 ### setting up conda env `whatispants` in specified `yolo_train` dir 
 ```bash
-conda create --prefix /.../yolo_train/conda/whatispants python=3.12
+conda create --prefix /.../yolo_train/conda/whatispants python=3.11.9
 
 conda activate /.../yolo_train/conda/whatispants   
 ```
