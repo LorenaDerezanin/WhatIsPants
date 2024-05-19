@@ -41,12 +41,8 @@ def lambda_handler(event, context):
 
     # Decode the input_image from base64
     try:
-        print("Event:")
-        print(event)
         base64_image_data = event['body']
         image_data = base64.b64decode(base64_image_data)
-        print("Decoded image data:")
-        print(base64_image_data)
         input_image = Image.open(BytesIO(image_data))
     except Exception as e:
         print(e)
@@ -64,14 +60,19 @@ def lambda_handler(event, context):
     # result[0].show()
 
     # TODO: use all results, not just the first one
-    output_image = Image.fromarray(result[0].plot())
+    bgr_array = result[0].plot()
+    # For some reason, result.plot() returns a BGR array, so we have to invert
+    # it like this. I found this in the docstring of plot.
+    rgb_array = bgr_array[..., ::-1]
+    output_image = Image.fromarray(rgb_array)
+
+    # output_image.show()
 
     # Convert to base64
     buffered = BytesIO()
     output_image.save(buffered, format="JPEG")
 
     base64_encoded_image = base64.b64encode(buffered.getvalue()).decode("utf-8")
-    print(f"Returning base64 image: {base64_encoded_image}")
     return {
         "statusCode": 200,
         "body": json.dumps({
