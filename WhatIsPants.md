@@ -16,8 +16,7 @@ jupyter:
 # What is pants?
 
 
-We've started this project to understand how segmentation models work. Identifying and segmenting pants in an image is a fairly easy task for us humans — we can do it with almost 100% accuracy. But how well can machines do it?
-To answer this existential question, we decided to train a segmentation model and run some predictions. Our first choice was the Ultralytics YOLOv8 segmentation model, because it's well-documented, open-source, and frankly, looks quite promising.
+We started this project to understand how segmentation models work. Identifying and segmenting pants in an image is a fairly easy task for humans — we can do it with almost 100% accuracy. But how well can machines do this task? To answer this existential question, we decided to train a segmentation model and run some predictions. Our first choice was the Ultralytics YOLOv8 segmentation model, because it's well-documented, open-source, and looks quite promising.
 
 
 
@@ -194,7 +193,7 @@ from remove_superfluous_empty_labels import remove_empty_labels
 
 # define dirs for training and validation sets
 train_labels_directory = "datasets/lvis_pants/labels/train2017"
-train_images_directory = "datasets/lvis_pants/images/train2017"
+train_images_directory = "datasets/lvis_pants/images/train2017
 val_labels_directory = "datasets/lvis_pants/labels/val2017"
 val_images_directory = "datasets/lvis_pants/images/val2017"
 
@@ -204,7 +203,7 @@ remove_empty_labels(train_labels_directory, train_images_directory)
 # remove empty labels in validation set
 remove_empty_labels(val_labels_directory, val_images_directory)
 
-# verify removal by counting remaining label files
+# verify that empty labels have been removed by counting remaining label files
 def count_files(directory):
     return len([f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))])
 
