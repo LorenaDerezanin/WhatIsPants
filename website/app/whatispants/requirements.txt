@@ -1,3 +1,1 @@
-opencv-python-headless==4.8.0.74
-requests==2.31.0
-ultralytics==8.2.13
+git+https://github.com/trainyolo/YOLO-ONNX.git@35a16bf

@@ -1,11 +1,12 @@
 import base64
+import cv2
 import json
 from io import BytesIO
 
 from PIL import Image
-from ultralytics import YOLO
+from yolo_onnx.yolov8_onnx import YOLOv8
 
-model = YOLO("lvis_fash_m_50.pt")
+_yolov8_detector = YOLOv8("lvis_fash_m_50.onnx")
 
 
 def lambda_handler(event, context):
@@ -51,12 +52,22 @@ def lambda_handler(event, context):
             "body": json.dumps({"error": "Could not decode the image"})
         }
 
-    result = model.predict(input_image)
+    result = _yolov8_detector(input_image)
+
+    detections = result.json()['detections']
+    print(detections)
+
+    # display detections
+    img = cv2.imread(input_image)
+    for det in detections:
+        x0, y0, x1, y1 = det['bbox']
+        img = cv2.rectangle(img, (x0, y0), (x1, y1), (255, 0, 0), 4)
+    cv2.imwrite('./output.jpg', img)
 
     # result[0].show()
 
     # TODO: use all results, not just the first one
-    output_image = Image.fromarray(result[0].plot())
+    output_image = Image.fromarray(results[0].plot())
 
     # Convert to base64
     buffered = BytesIO()
