@@ -33,6 +33,5 @@ docker-compose up
    cannot open shared object file: No such file or directory
   ```
   * Presumably, this is because a Lambda environment doesn't have libGL
-  * ~~I will try [YOLO-ONNX](https://www.trainyolo.com/blog/deploy-yolov8-on-aws-lambda)
-    instead~~
-    * YOLO-ONNX is not an option because it only does bounding-box predictions, not segmentation
+  * I will try to use a built docker image for the lambda environment (instead of a
+    vanilla python lambda environment)
