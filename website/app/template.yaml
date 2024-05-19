@@ -9,7 +9,7 @@ Description: >
 Globals:
   Function:
     Timeout: 30  # 30 seconds
-    MemorySize: 16384  # 16GB
+    MemorySize: 10240  # 10GB is the maximum memory size for Lambda functions
 
     Tracing: Active
   Api:
