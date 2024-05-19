@@ -41,8 +41,12 @@ def lambda_handler(event, context):
 
     # Decode the input_image from base64
     try:
+        print("Event:")
         print(event)
-        image_data = base64.b64decode(event['body'])
+        base64_image_data = event['body']
+        image_data = base64.b64decode(base64_image_data)
+        print("Decoded image data:")
+        print(base64_image_data)
         input_image = Image.open(BytesIO(image_data))
     except Exception as e:
         print(e)
@@ -66,7 +70,7 @@ def lambda_handler(event, context):
     buffered = BytesIO()
     output_image.save(buffered, format="JPEG")
 
-    base64_encoded_image = str(base64.b64encode(buffered.getvalue()))
+    base64_encoded_image = base64.b64encode(buffered.getvalue()).decode("utf-8")
     print(f"Returning base64 image: {base64_encoded_image}")
     return {
         "statusCode": 200,
