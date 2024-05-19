@@ -51,7 +51,11 @@ def lambda_handler(event, context):
             "body": json.dumps({"error": "Could not decode the image"})
         }
 
+    print("Running prediction")
+
     result = model.predict(input_image)
+
+    print("Prediction done")
 
     # result[0].show()
 
@@ -62,10 +66,12 @@ def lambda_handler(event, context):
     buffered = BytesIO()
     output_image.save(buffered, format="JPEG")
 
+    base64_encoded_image = str(base64.b64encode(buffered.getvalue()))
+    print(f"Returning base64 image: {base64_encoded_image}")
     return {
         "statusCode": 200,
         "body": json.dumps({
             "message": "hello world",
-            "result": str(base64.b64encode(buffered.getvalue())),
+            "result": base64_encoded_image,
         }),
     }
