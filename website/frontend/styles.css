@@ -4,6 +4,7 @@ body, html {
   height: 100%;
   overflow: hidden;
 }
+
 .bg-image {
   background-image: url('pants.webp');
   background-position: center center;
@@ -14,20 +15,36 @@ body, html {
   top: 0;
   left: 0;
 }
-.question-mark {
+
+.centered-content {
   position: fixed;
   top: 50%;
   left: 50%;
-  font-size: 1rem; /* Starting font size */
-  color: #fff; /* Question mark color */
-  transform: translate(-50%, -50%) scale(0);
+  transform: translate(-50%, -50%);
+  text-align: center;
   opacity: 0;
+  transform: translate(-50%, -50%) scale(0);
   animation: fadeInZoom 5s forwards; /* Adjust time as needed */
-  
+}
+
+.question-mark {
+  font-size: 20rem; /* Adjust the question mark size as needed */
+  color: #fff; /* Question mark color */
   font-family: "Protest Riot", sans-serif;
   font-weight: 400;
   font-style: normal;
 }
+
+.form-container {
+  margin-top: 20px;
+  font-size: 3rem; /* Adjust to make the form font much smaller than the question mark */
+}
+
+.form-container input,
+.form-container button {
+  font-size: 0.15em; /* 15% of the form container font size, which is 15% of the question mark size */
+}
+
 @keyframes fadeInZoom {
   0% {
     opacity: 0;
@@ -35,6 +52,6 @@ body, html {
   }
   100% {
     opacity: 0.9;
-    transform: translate(-50%, -50%) scale(20); /* Adjust scaling factor as needed */
+    transform: translate(-50%, -50%) scale(1); /* Adjust scaling factor as needed */
   }
 }
