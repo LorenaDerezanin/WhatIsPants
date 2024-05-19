@@ -246,7 +246,7 @@ We ran multiple training runs with diffferent configurations:
     * number of epochs: 5, 50, 100    
     * total number of runs: 9    
     
-We found that the precision and recall reached a plateau both in train and val stages around 50th epoch and remained fairly stable until 100th epoch. Model size s performed a bit more poorly than the larger models.   
+We found that the precision and recall reached a plateau both in train and val stages around 50th epoch and remained fairly stable until 100th epoch. Same goes for box, class and segmetation loss. Model size s performed a bit more poorly than the larger models.   
 Comparing the same metrics between model sizes m and x for the same number of epochs was only marginally higher for the larger model x.    
 Based on these metrics, we concluded that yolo model size m with 50 epochs is an optimal strategy for this task.   
 
