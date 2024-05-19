@@ -1,11 +1,11 @@
 import base64
 import json
+from io import BytesIO
 
 from PIL import Image
-from io import BytesIO
 from ultralytics import YOLO
 
-# import requests
+model = YOLO("lvis_fash_m_50.pt")
 
 
 def lambda_handler(event, context):
@@ -39,11 +39,11 @@ def lambda_handler(event, context):
     #     raise e
 
 
-    # Decode the image from base64
+    # Decode the input_image from base64
     try:
         print(event)
         image_data = base64.b64decode(event['body'])
-        image = Image.open(BytesIO(image_data))
+        input_image = Image.open(BytesIO(image_data))
     except Exception as e:
         print(e)
         return {
@@ -51,14 +51,21 @@ def lambda_handler(event, context):
             "body": json.dumps({"error": "Could not decode the image"})
         }
 
-    model = YOLO("lvis_fash_m_50.pt")
+    result = model.predict(input_image)
 
-    model.predict(image)
+    # result[0].show()
+
+    # TODO: use all results, not just the first one
+    output_image = Image.fromarray(result[0].plot())
+
+    # Convert to base64
+    buffered = BytesIO()
+    output_image.save(buffered, format="JPEG")
 
     return {
         "statusCode": 200,
         "body": json.dumps({
             "message": "hello world",
-            # "location": ip.text.replace("\n", "")
+            "result": str(base64.b64encode(buffered.getvalue())),
         }),
     }
