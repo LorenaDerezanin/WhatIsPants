@@ -17,8 +17,11 @@ body, html {
 }
 
 .centered-content {
-  position: absolute;
-  display: block;
+  /* `position: relative` and `display: flow` allow vertical centering while also
+  adapting to the width of the contents (in this case, it adapts to the with of
+  the file upload form, not shifting the upload button into a new line) */
+  position: relative;
+  display: flow;
   top: 50%;
   left: 50%;
   max-width: 80%;
@@ -44,7 +47,7 @@ body, html {
 
 .form-container input,
 .form-container button {
-  font-size: 0.2em; /* 20% of the form container font size, which is 20% of the question mark size */
+  font-size: 0.3em; /* 20% of the form container font size, which is 20% of the question mark size */
 }
 
 .result-image {
