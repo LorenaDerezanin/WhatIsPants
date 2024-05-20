@@ -2,7 +2,7 @@ import base64
 import json
 from io import BytesIO
 
-from PIL import Image
+from PIL import Image, ImageOps
 from ultralytics import YOLO
 
 model = YOLO("lvis_fash_m_50.pt")
@@ -43,7 +43,12 @@ def lambda_handler(event, context):
     try:
         base64_image_data = event['body']
         image_data = base64.b64decode(base64_image_data)
-        input_image = Image.open(BytesIO(image_data))
+        raw_image = Image.open(BytesIO(image_data))
+        # This rotates images which have orientation information in the EXIF
+        # metadata.
+        print("Transposing image...")
+        input_image = ImageOps.exif_transpose(raw_image)
+        print("Transposed image.")
     except Exception as e:
         print(e)
         return {
@@ -78,7 +83,8 @@ def lambda_handler(event, context):
         "headers": {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Methods": "POST",
-            "Access-Control-Allow-Headers": "Content-Type"
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Content-Type": "application/json",
         },
         "body": json.dumps({
             "message": "hello world",
