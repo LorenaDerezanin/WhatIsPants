@@ -22,12 +22,15 @@ body, html {
   the file upload form, not shifting the upload button into a new line) */
   position: relative;
   display: flow;
+  /* top, left, and translate at 50% center the div */
   top: 50%;
   left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80vw;
+  height: 80vh;
   max-width: 80%;
   max-height: 80%;
   text-align: center;
-  transform: translate(-50%, -50%);
 }
 
 .question-mark {
@@ -52,8 +55,9 @@ body, html {
 
 .result-image {
   display: none;
-  max-width: -webkit-fill-available;
-  max-height: -webkit-fill-available;
+  /* This ensures the image is centered and adapts to the width of the parent container */
+  max-width: 100%;
+  max-height: 100%;
 }
 
 @keyframes fadeInZoom {
