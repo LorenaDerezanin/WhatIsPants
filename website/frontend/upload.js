@@ -14,11 +14,13 @@ function uploadPhoto() {
         .then(response => response.json())
         .then(data => {
             console.log('Success:', data);
-            var imageElement = document.getElementById('resultImage')
+            var imageElement = document.getElementById('result-image')
             // Decode the base64 string and set it as the image source
             imageElement.src = 'data:image/jpeg;base64,' + data.result;
             // Show the image element once the annotated image is loaded
             imageElement.style.display = 'block';
+            // Hide question mark
+            document.getElementById('question-mark').style.display = 'none';
         })
         .catch((error) => {
             console.error('Error:', error);
