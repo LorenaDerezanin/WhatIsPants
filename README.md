@@ -6,9 +6,9 @@
 
 ### setting up conda env `whatispants` in specified `yolo_train` dir 
 ```bash
-conda create --prefix /.../yolo_train/conda/whatispants python=3.11.9
+conda create -n whatispants python=3.11.9
 
-conda activate /.../yolo_train/conda/whatispants   
+conda activate whatispants   
 ```
 
 ### install requirements in conda env
@@ -16,6 +16,17 @@ conda activate /.../yolo_train/conda/whatispants
 pip install -r requirements.txt --no-cache-dir
 ```
 
+### Create kernel based on conda env for Jupyter notebook
+```bash
+ipython kernel install --user --name=whatispants 
+```
+
+### Start Jupyter lab
+```bash
+jupyter lab
+```
+In Jupyter lab open `WhatIsPants.ipynb` and select the `whatispants` kernel
+in the top-right corner.
 
 ## After training, to run segmentation inference:
 Get the trained model file `best.pt` from the training output, and
