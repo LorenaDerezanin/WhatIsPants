@@ -2,9 +2,12 @@ function uploadPhoto() {
     var file = document.getElementById('photo').files[0];
     var reader = new FileReader();
     reader.onloadend = function() {
+        // For local development, assuming the API is running on the same machine on port 3000
+        // const apiUrl = `http://${window.location.hostname}:3000/whatispants`
+        // Use your API Gateway endpoint URL here
+        const apiUrl = 'https://1pt6rewihj.execute-api.eu-west-1.amazonaws.com/Prod/whatispants/'
         fetch(
-            // 'http://127.0.0.1:3000/whatispants',
-            ' https://1pt6rewihj.execute-api.eu-west-1.amazonaws.com/Prod/whatispants/',  // Use your API Gateway endpoint URL here
+            apiUrl,
             {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},

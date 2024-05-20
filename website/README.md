@@ -6,18 +6,25 @@ training project. See the [WhatIsPants README](../README.md) for
 details setting up the conda environment.
 
 ## Local Development
+
+### Running the Backend
 Install
 [`sam-cli`](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html).
 
-To start the server, run:
+To start the API / backend server, run:
 ```bash
 sam build --use-container --cached --parallel && \
-  sam local start-api
+  sam local start-api --host 0.0.0.0
 ```
 
-Open [index.html](frontend/index.html) in a browser to test the upload.
+* This runs an AWS Lambda environment in a docker container.
+  * This is the bit that accepts image uploads and runs actual inferences.
+* The `--host 0.0.0.0` parameter allows the server to be accessed from other 
+  devices on your local network.
+  * This is useful for testing the frontend on a mobile device.
 
-Alternatively, run the following `curl` command:
+You can test the backend server by, running the following `curl` command,
+or read on to test it using an actual web page .
 ```bash
 curl -v POST \ 
      -H "Content-Type: application/json" \
@@ -25,12 +32,24 @@ curl -v POST \
      http://127.0.0.1:3000/whatispants/
 ```
 
+### Running the Frontend
+Start an HTTP server using python's built-in `http.server` module.
+```bash
+cd frontend
+python -m http.server 80
+```
+Now you can access the frontend at [http://localhost](http://localhost).
+
+> **NOTE:** By default, the frontend will use the backend deployed to AWS,
+> not the local backend. To use the local backend, you will need to modify
+> the `apiUrl` variable in [frontend/upload.js](frontend/upload.js).
+
 ## Deployment
 
 ### Set up AWS CLI
 The simplest way to set up the AWS CLI is to use the `aws configure --profile <profile-name>` command.
 You will need to create an Access Key and a Secret Access Key in the AWS Console
-and paste them below
+and paste them below.
 ```bash
 aws configure --profile <profile-name>                  
   AWS Access Key ID [None]: <copy this from the AWS Console>
@@ -42,7 +61,8 @@ aws configure --profile <profile-name>
 ### Run guided deployment using `sam deploy`
 Run the `sam deploy --guided` wizard using the `<profile-name>` created above.
 ```bash
-AWS_PROFILE=<profile-name> sam deploy --guided
+sam build --use-container --cached --parallel && \
+  AWS_PROFILE=<profile-name> sam deploy --guided
 
     Configuring SAM deploy
     ======================
