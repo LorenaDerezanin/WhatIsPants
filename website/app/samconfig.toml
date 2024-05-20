@@ -15,11 +15,10 @@ lint = true
 
 [default.deploy.parameters]
 capabilities = "CAPABILITY_IAM"
-confirm_changeset = true
+region = "eu-west-1"
 resolve_s3 = true
-
-[default.package.parameters]
-resolve_s3 = true
+s3_prefix = "whatispants"
+image_repositories = ["WhatIsPantsFunction=533267002582.dkr.ecr.eu-west-1.amazonaws.com/whatispantsc5f6204e/whatispantsfunction70cf5cc7repo"]
 
 [default.sync.parameters]
 watch = true
