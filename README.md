@@ -16,6 +16,11 @@ conda activate whatispants
 pip install -r requirements.txt --no-cache-dir
 ```
 
+### Install jupyter lab if not already installed:
+```bash
+pip install jupyterlab==4.2.0
+```
+
 ### Create kernel based on conda env for Jupyter notebook
 ```bash
 ipython kernel install --user --name=whatispants 

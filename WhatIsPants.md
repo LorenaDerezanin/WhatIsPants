@@ -26,8 +26,10 @@ If you're running this as a Jupyter notebook from an already cloned git reposito
 ```python
 # clone the repo
 !git clone https://github.com/LorenaDerezanin/WhatIsPants.git
-!cd WhatIsPants
+%cd WhatIsPants
+```
 
+```python
 # install requirements with pip
 !pip install -r requirements.txt --no-cache-dir
 ```
