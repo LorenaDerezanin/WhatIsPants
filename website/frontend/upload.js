@@ -14,8 +14,11 @@ function uploadPhoto() {
         .then(response => response.json())
         .then(data => {
             console.log('Success:', data);
+            var imageElement = document.getElementById('resultImage')
             // Decode the base64 string and set it as the image source
-            document.getElementById('resultImage').src = 'data:image/jpeg;base64,' + data.result;
+            imageElement.src = 'data:image/jpeg;base64,' + data.result;
+            // Show the image element once the annotated image is loaded
+            imageElement.style.display = 'block';
         })
         .catch((error) => {
             console.error('Error:', error);

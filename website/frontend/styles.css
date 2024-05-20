@@ -42,13 +42,13 @@ body, html {
 
 .form-container input,
 .form-container button {
-  font-size: 0.15em; /* 15% of the form container font size, which is 15% of the question mark size */
+  font-size: 0.2em; /* 20% of the form container font size, which is 20% of the question mark size */
 }
 
 .result-image {
   max-width: 80%;
   max-height: 80%;
-  display: block;
+  display: none;
   margin: 0 auto;
 }
 
