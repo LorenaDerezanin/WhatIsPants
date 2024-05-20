@@ -34,7 +34,6 @@ def mask2contour(mask_filename: str, masks_dir: str, labels_dir: str, pants_mask
             formatted_contour_label = "0 " + ' '.join([f'{num:.8f}' for row in normalized_contour for num in row])
     else:
         formatted_contour_label = ""
-        print(f"No pants labelled in {mask_filename}")
 
     contour_filename = mask_filename.replace("_segm.png", ".txt")
     contour_file_path = os.path.join(labels_dir, contour_filename)

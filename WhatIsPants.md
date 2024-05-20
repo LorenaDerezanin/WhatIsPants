@@ -8,7 +8,7 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.16.2
   kernelspec:
-    display_name: WhatIsPants
+    display_name: whatispants
     language: python
     name: whatispants
 ---
@@ -16,62 +16,66 @@ jupyter:
 # What is pants?
 
 
-We started this project to understand how segmentation models work. Identifying and segmenting pants in an image is a fairly easy task for humans — we can do it with almost 100% accuracy. But how well can machines do this task? To answer this existential question, we decided to train a segmentation model and run some predictions. Our first choice was the Ultralytics YOLOv8 segmentation model, because it's well-documented, open-source, and looks quite promising.
+We started this project to understand how segmentation models work. Identifying and segmenting pants in an image is a fairly easy task for humans — we can do it with almost 100% accuracy. But how well can machines do this task? To answer this existential question, we decided to train a segmentation model and run some predictions. Our first choice was the Ultralytics YOLOv8 segmentation model, because it's well-documented, open-source, and looks quite promising. To read more about the whole project, please check: 
 
 
 
 ## Setting up Google Colab env
+If you're running this as a Jupyter notebook from an already cloned git repository, feel free to skip this section.
 
 ```python
 # clone the repo
 !git clone https://github.com/LorenaDerezanin/WhatIsPants.git
 !cd WhatIsPants
-```
 
-## Install requirements with pip
-
-```python
+# install requirements with pip
 !pip install -r requirements.txt --no-cache-dir
 ```
 
 ## Prepare dataset
 
 
-As our initial dataset we used a Deep Fashion MultiModal dataset: https://github.com/yumingj/DeepFashion-MultiModal    
+As our initial dataset we used the Deep Fashion MultiModal dataset: https://github.com/yumingj/DeepFashion-MultiModal    
     * from 44,096 jpg images, 12,701 are annotated (classes, segmentation masks and bounding boxes)
 
 ```python
 # download image files
-!wget --header 'Host: drive.usercontent.google.com' \
-  --header 'Upgrade-Insecure-Requests: 1' \
-  --header 'Sec-Fetch-Dest: document' \
-  --header 'Sec-Fetch-Mode: navigate' \
-  --header 'Sec-Fetch-Site: cross-site' \
-  --header 'Sec-Fetch-User: ?1' \
+!wget --header 'Sec-Fetch-Dest: document' \
   'https://drive.usercontent.google.com/download?id=1U2PljA7NE57jcSSzPs21ZurdIPXdYZtN&export=download&authuser=0&confirm=t&uuid=115a0cd6-8ddb-427b-9343-62b76c4d939c&at=APZUnTWiXg4LlG3A7QPA5DmjASX8%3A1715537567680' \
   --output-document 'images.zip'
 ```
 
 ```python
 # download annotation labels
-!wget --header 'Host: drive.usercontent.google.com' \
-  --header 'Upgrade-Insecure-Requests: 1' \
-  --header 'Sec-Fetch-Dest: document' \
-  --header 'Sec-Fetch-Mode: navigate' \
-  --header 'Sec-Fetch-Site: cross-site' \
-  --header 'Sec-Fetch-User: ?1'\
+!wget --header 'Sec-Fetch-Dest: document' \
   'https://drive.usercontent.google.com/download?id=1r-5t-VgDaAQidZLVgWtguaG7DvMoyUv9&export=download&authuser=0&confirm=t&uuid=b445e6d2-634c-4b59-96c8-4455c6f117a5&at=APZUnTV7OltdPbT0OB1lUK1FhJO8%3A1715537716467' \
   --output-document 'segm.zip'
+```
+
+```python
+# Unzip the downloaded segmentation labels
+!rm -rf datasets/deepfashion/segm
+!unzip -qo segm.zip -d datasets/deepfashion/
+```
+
+```python
+# Remove data from target directory in preparation for unzipping 
+!rm -rf datasets/deepfashion/images
+# Unzip the downloaded images
+# This takes about 2 minutes.
+# The -q flag makes it produce no output to prevent spamming the notebook
+!unzip -q images.zip -d datasets/deepfashion/
 ```
 
 ### Convert masks to contours format that YOLO can process
 
 ```python
 import numpy as np
+import os
 from concurrent.futures import ThreadPoolExecutor
 
 # import the mask2contour function 
-from mask2contour import mask2contour
+from mask_2_contour import mask2contour
 
 masks_dir = "datasets/deepfashion/segm"
 labels_dir = "datasets/deepfashion/labels"
@@ -80,16 +84,19 @@ labels_dir = "datasets/deepfashion/labels"
 # pants are marked with a light gray color in mask files
 pants_mask_color = np.array([211, 211, 211])
 
+# Get the number of available CPUs
+num_cpus = os.cpu_count()
+
 # load labelled mask pngs
 # parallelize processing
-with ThreadPoolExecutor(max_workers=10) as executor:
+with ThreadPoolExecutor(max_workers=num_cpus) as executor:
     for mask_filename in os.listdir(masks_dir):
         executor.submit(mask2contour, mask_filename, masks_dir, labels_dir, pants_mask_color)
 ```
 
-## Subset data into training, validation and test sets
+## Subset data into `train`, `val` and `test` sets
 
-Dataset containg all 12,701 labelled images was split into:   
+Dataset containing all 12,701 labelled images was split into:   
     * train 80%   
     * val 10%  
     * test 10%   
@@ -234,7 +241,7 @@ print(f"Total deleted images: {deleted_files_count}")
 
 ### Prepare `train` configuration yaml file 
 
-We kept only one category in the config yaml (0: This is pants) and removed other categories.   
+We kept only one class in the config yaml (0: This is pants) and removed other object classes.   
 Tensorboard set to `true` in yaml to monitor model training and validation performance.
 
 
