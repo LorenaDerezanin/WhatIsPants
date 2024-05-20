@@ -45,6 +45,13 @@ body, html {
   font-size: 0.15em; /* 15% of the form container font size, which is 15% of the question mark size */
 }
 
+.result-image {
+  max-width: 80%;
+  max-height: 80%;
+  display: block;
+  margin: 0 auto;
+}
+
 @keyframes fadeInZoom {
   0% {
     opacity: 0;

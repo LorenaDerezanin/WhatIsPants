@@ -3,7 +3,8 @@ function uploadPhoto() {
     var reader = new FileReader();
     reader.onloadend = function() {
         fetch(
-            'http://127.0.0.1:3000/whatispants',  // Use your API Gateway endpoint URL here
+            // 'http://127.0.0.1:3000/whatispants',
+            ' https://1pt6rewihj.execute-api.eu-west-1.amazonaws.com/Prod/whatispants/',  // Use your API Gateway endpoint URL here
             {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
