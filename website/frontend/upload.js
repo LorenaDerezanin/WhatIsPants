@@ -18,7 +18,8 @@ function uploadPhoto() {
             // Decode the base64 string and set it as the image source
             imageElement.src = 'data:image/jpeg;base64,' + data.result;
             // Show the image element once the annotated image is loaded
-            imageElement.style.display = 'block';
+            // `inline` ensures it's centered horizontally.
+            imageElement.style.display = 'inline';
             // Hide question mark
             document.getElementById('question-mark').style.display = 'none';
         })

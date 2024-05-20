@@ -26,13 +26,21 @@ body, html {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 80vw;
-  height: 80vh;
+
+  /* Defining both h/w and max h/w is necessary because otherwise very tall
+  images would scroll out of the viewport.
+  It also means not tall images are not centered vertically, but I couldn't find
+  a solution that centers vertically but doesn't cause tall images to overflow. */
+  width: 80%;
+  height: 60%;
+  max-width: 80vw;
+  max-height: 60vh;
   text-align: center;
 }
 
 .question-mark {
-  font-size: 20rem; /* Adjust the question mark size as needed */
+  /* This makes sure the question mark doesn't overflow on wide screens. */
+  font-size: 50vh;
   color: #fff; /* Question mark color */
   font-family: "Protest Riot", sans-serif;
   font-weight: 400;
@@ -57,8 +65,6 @@ body, html {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   max-width: 80%;
-  /*overflow: hidden;
-  text-overflow: ellipsis;*/
 }
 
 .form-container input,
@@ -71,6 +77,8 @@ body, html {
   /* This ensures the image is centered and adapts to the width of the parent container */
   max-width: 100%;
   max-height: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 @keyframes fadeInZoom {
