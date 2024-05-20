@@ -28,8 +28,6 @@ body, html {
   transform: translate(-50%, -50%);
   width: 80vw;
   height: 80vh;
-  max-width: 80%;
-  max-height: 80%;
   text-align: center;
 }
 
@@ -45,12 +43,27 @@ body, html {
 }
 
 .form-container {
-  font-size: 3rem; /* Adjust to make the form font much smaller than the question mark */
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-container input {
+  /* display, line-clamp, and max-width, along with the parent display: flex,
+  justify-content: center, and align-items: center makes the input field
+  centered and allows it to adapt to the width of the contents,
+  forcing the text to do an ellipsis if it's too long, even without whitespaces  */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  max-width: 80%;
+  /*overflow: hidden;
+  text-overflow: ellipsis;*/
 }
 
 .form-container input,
 .form-container button {
-  font-size: 0.3em; /* 20% of the form container font size, which is 20% of the question mark size */
+  white-space: nowrap;
 }
 
 .result-image {
