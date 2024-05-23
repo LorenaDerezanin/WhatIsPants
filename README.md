@@ -6,7 +6,7 @@
 
 ### setting up conda env `whatispants` in specified `yolo_train` dir 
 ```bash
-conda create -n whatispants python=3.11.9
+conda create -n whatispants python=3.10.12
 
 conda activate whatispants   
 ```
@@ -98,6 +98,17 @@ a home base, a bat, and a belt, but no pants.
 
 
 ### TO DO:
+- [ ] Google Colab uses `python 3.10.12`, so we should use that in our conda environment
+      and downgrade some dependencies accordingly:
+    ```python
+    ERROR: pip's dependency resolver does not currently take into account all the packages that are installed.
+    This behaviour is the source of the following dependency conflicts.
+    google-colab 1.0.0 requires ipykernel==5.5.6, but you have ipykernel 6.29.4 which is incompatible.
+    notebook 6.5.5 requires jupyter-client<8,>=5.3.4, but you have jupyter-client 8.6.1 which is incompatible.
+    tensorflow-metadata 1.15.0 requires protobuf<4.21,>=3.20.3; python_version < "3.11", but you have protobuf 4.25.3 which is incompatible.
+    tf-keras 2.15.1 requires tensorflow<2.16,>=2.15, but you have tensorflow 2.16.1 which is incompatible.
+    ```
+
 - [x] run yolo small and xl model (epochs: 5, 20, 50, 100)
 - [x] run yolo test run (yolov8l-seg.pt used)
 - [x] find bug in mask2contour - pants are found but not there, color issue?
