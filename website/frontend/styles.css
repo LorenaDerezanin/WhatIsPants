@@ -49,6 +49,10 @@ body, html {
   animation: fadeInZoom 5s forwards; /* Adjust time as needed */
 }
 
+.rotate {
+  animation: fadeInZoom 5s forwards, rotate 2s linear infinite;
+}
+
 .form-container {
   margin-top: 0.5rem;
   display: flex;
@@ -100,5 +104,14 @@ body, html {
   100% {
     opacity: 0.9;
     transform: scale(1);
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
   }
 }
