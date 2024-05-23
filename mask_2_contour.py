@@ -16,8 +16,11 @@ def mask2contour(mask_filename: str, masks_dir: str, labels_dir: str, pants_mask
         contours, _ = cv2.findContours(pants_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
         # select contour with max area
+        # if pants are occluded and contour interrupted, choose the largest area for the pants label
         contour = max(contours, key=cv2.contourArea)
 
+        # some images have antialiasing artifacts in the same color as the pants mask
+        # this filters them out
         if cv2.contourArea(contour) == 0:
             formatted_contour_label = ""
             print(f"Ignoring 0-area contour found in {mask_filename}")
@@ -27,11 +30,27 @@ def mask2contour(mask_filename: str, masks_dir: str, labels_dir: str, pants_mask
             approx = cv2.approxPolyDP(contour, epsilon, True)
 
             # convert to normalized coordinates for YOLO
+            # E.g. if the input image is 400x600, the x, y coordinates of
+            # the contours will be something like x=200, y=400, etc.
+            # Normalization converts them to x=0.5, y=0.66 (i.e. from the range of x=[1,400], y=[1,600]
+            # to the range of x=[0.0, 1.0], y=[0.0, 1.0])
             height, width = pants_mask.shape
             normalized_contour = approx.reshape(-1, 2) / [width, height]
 
-            # convert contour array to single line string
-            formatted_contour_label = "0 " + ' '.join([f'{num:.8f}' for row in normalized_contour for num in row])
+            # normalized_contour is a list of x, y tuples, e.g. [(0.4, 0.2), (0.41, 0.22)]
+            # Convert it to a flat list of strings with 8 decimals, e.g.
+            # ["0.4000000", "0.2000000", "0.41000000", "0.22000000"]
+            xy_coordinates = [
+                # Print each x or y coordinate with 8 decimals
+                f'{coordinate:.8f}'
+                for xy_tuple in normalized_contour
+                for coordinate in xy_tuple
+            ]
+            # convert contour array to a single line string, prepending "0 " as the class index
+            # 0 is the index (number) of the pants class - our only class
+            # E.g. "0 0.4000000 0.2000000 0.41000000 0.22000000"
+            coordinates_string = ' '.join(xy_coordinates)
+            formatted_contour_label = "0 " + coordinates_string
     else:
         formatted_contour_label = ""
 
@@ -41,4 +60,3 @@ def mask2contour(mask_filename: str, masks_dir: str, labels_dir: str, pants_mask
     # write contour to file
     with open(contour_file_path, 'w') as file:
         file.write(formatted_contour_label)
-
