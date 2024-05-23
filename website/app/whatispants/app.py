@@ -3,9 +3,8 @@ import json
 from io import BytesIO
 
 from PIL import Image, ImageOps
-from ultralytics import YOLO
 
-model = YOLO("lvis_fash_m_50.pt")
+import inference
 
 
 def lambda_handler(event, context):
@@ -56,20 +55,8 @@ def lambda_handler(event, context):
             "body": json.dumps({"error": "Could not decode the image"})
         }
 
-    print("Running prediction")
-
-    result = model.predict(input_image)
-
-    print("Prediction done")
-
-    # result[0].show()
-
-    # TODO: use all results, not just the first one
-    bgr_array = result[0].plot()
-    # For some reason, result.plot() returns a BGR array, so we have to invert
-    # it like this. I found this in the docstring of plot.
-    rgb_array = bgr_array[..., ::-1]
-    output_image = Image.fromarray(rgb_array)
+    inference_result = inference.infer(input_image)
+    output_image = inference_result.annotated_image
 
     # output_image.show()
 
@@ -89,5 +76,6 @@ def lambda_handler(event, context):
         "body": json.dumps({
             "message": "hello world",
             "result": base64_encoded_image,
+            "num_pants_found": inference_result.num_pants_found,
         }),
     }

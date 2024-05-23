@@ -17,6 +17,7 @@ predictions/
 trains/
 datasets/
 scratch/
+runs/
 
 
 # ide project files
