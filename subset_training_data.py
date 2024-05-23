@@ -9,12 +9,14 @@ def copy_file(file, destination):
 
 
 def setup_dirs(workdir, subset_size):
-    labels_source_dir = os.path.join(workdir, 'labels')
-    images_source_dir = os.path.join(workdir, 'images_fullres')
+    basedir = os.path.join(workdir, 'datasets', 'deepfashion')
+    labels_source_dir = os.path.join(basedir, 'labels')
+    images_source_dir = os.path.join(basedir, 'images_fullres')
 
-    train_dir = os.path.join(workdir, 'train')
-    val_dir = os.path.join(workdir, 'val')
-    test_dir = os.path.join(workdir, 'test')
+    targetdir = 'deepfash'
+    train_dir = os.path.join(targetdir, 'train')
+    val_dir = os.path.join(targetdir, 'val')
+    test_dir = os.path.join(targetdir, 'test')
 
     for dir_path in [train_dir, val_dir, test_dir]:
             if os.path.exists(dir_path):

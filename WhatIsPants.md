@@ -57,6 +57,7 @@ As our initial dataset we used the Deep Fashion MultiModal dataset: https://gith
 ```python
 # Unzip the downloaded segmentation labels
 !rm -rf datasets/deepfashion/segm
+!mkdir -p datasets/deepfashion
 !unzip -qo segm.zip -d datasets/deepfashion/
 ```
 
@@ -67,6 +68,10 @@ As our initial dataset we used the Deep Fashion MultiModal dataset: https://gith
 # This takes about 2 minutes.
 # The -q flag makes it produce no output to prevent spamming the notebook
 !unzip -q images.zip -d datasets/deepfashion/
+```
+
+```python
+!mv datasets/deepfashion/images datasets/deepfashion/images_fullres
 ```
 
 ### Convert masks to contours format that YOLO can process
