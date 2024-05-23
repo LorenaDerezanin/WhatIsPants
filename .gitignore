@@ -27,3 +27,5 @@ scratch/
 .DS_Store
 
 *.zip
+
+__pycache__/
