@@ -18,6 +18,14 @@ function uploadPhoto() {
         .then(data => {
             console.log('Success:', data);
             var imageElement = document.getElementById('result-image')
+            var noPantsText = document.getElementById('no-pants-text');
+
+            if (data.num_pants_found === 0) {
+                noPantsText.style.display = 'block';
+            } else {
+                noPantsText.style.display = 'none';
+            }
+
             // Decode the base64 string and set it as the image source
             imageElement.src = 'data:image/jpeg;base64,' + data.result;
             // Show the image element once the annotated image is loaded

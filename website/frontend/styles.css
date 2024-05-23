@@ -80,6 +80,18 @@ body, html {
   justify-content: center;
 }
 
+.no-pants-text {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #f63e8f;
+  font-size: 3rem;
+  font-family: "Protest Riot", sans-serif;
+  font-weight: 400;
+}
+
 @keyframes fadeInZoom {
   0% {
     opacity: 0;

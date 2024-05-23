@@ -26,7 +26,7 @@ sam build --use-container --cached --parallel && \
 You can test the backend server by, running the following `curl` command,
 or read on to test it using an actual web page .
 ```bash
-curl -v POST \ 
+curl -v POST \
      -H "Content-Type: application/json" \
      -d "$(base64 -i ../test_images/tito.jpg)" \
      http://127.0.0.1:3000/whatispants/
