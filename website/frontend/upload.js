@@ -34,8 +34,8 @@ function uploadPhoto() {
         // Use your API Gateway endpoint URL here
         const apiUrl = 'https://1pt6rewihj.execute-api.eu-west-1.amazonaws.com/Prod/whatispants/'
 
-        // Change button text to "Uploading..."
-        uploadButton.textContent = "Uploading...";
+        // Change button text
+        uploadButton.textContent = "Checking if pants...";
         uploadButton.disabled = true;
         // Start rotating the question mark while uploading
 //        questionMark.style.display = questionMarkOriginalDisplay;
