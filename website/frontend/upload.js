@@ -1,3 +1,22 @@
+function showSelectedPhoto(event) {
+    var file = event.target.files[0];
+    var reader = new FileReader();
+
+    reader.onload = function(e) {
+        var imageElement = document.getElementById('result-image');
+        imageElement.src = e.target.result;
+        imageElement.style.display = 'inline';
+        // Hide question mark
+        document.getElementById('question-mark').style.display = 'none';
+    };
+
+    if (file) {
+        reader.readAsDataURL(file);
+    } else {
+        alert('No file selected. Please select an image file.');
+    }
+};
+
 function uploadPhoto() {
     var file = document.getElementById('photo').files[0];
     var reader = new FileReader();
@@ -66,3 +85,7 @@ function uploadPhoto() {
         alert('No file selected. Please select an image file.');
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('photo').onchange = showSelectedPhoto;
+})
