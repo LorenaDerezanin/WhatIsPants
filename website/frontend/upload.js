@@ -8,6 +8,8 @@ function showSelectedPhoto(event) {
         imageElement.style.display = 'inline';
         // Hide question mark
         document.getElementById('question-mark').style.display = 'none';
+        // Hide "no pants" label in case it was shown for a previous upload
+        document.getElementById('no-pants-text').style.display = 'none';
     };
 
     if (file) {
