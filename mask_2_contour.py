@@ -41,7 +41,7 @@ def mask2contour(mask_filename: str, masks_dir: str, labels_dir: str, pants_mask
             # Convert it to a flat list of strings with 8 decimals, e.g.
             # ["0.4000000", "0.2000000", "0.41000000", "0.22000000"]
             xy_coordinates = [
-                # Print each x or y coordinate with 8 decimals
+                # Print each x or y coordinate with 8 decimals 
                 f'{coordinate:.8f}'
                 for xy_tuple in normalized_contour
                 for coordinate in xy_tuple

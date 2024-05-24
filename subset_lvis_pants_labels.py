@@ -17,24 +17,24 @@ def process_file(source_directory, target_directory, labels_of_interest, filenam
 
 
 def subset_labels(source_directory, target_directory):
-    # Ensure the target directory exists
+    # ensure the target directory exists
     if not os.path.exists(target_directory):
         os.makedirs(target_directory)
 
-    # Classes in the LVIS dataset that represent pants
+    # classes in the LVIS dataset that represent pants
     labels_of_interest = {'950', '1039', '1121'}
 
-    # Get the number of CPUs available
+    # get the number of CPUs available
     num_cpus = multiprocessing.cpu_count()
 
-    # Using ThreadPoolExecutor to process files in parallel
+    # using ThreadPoolExecutor to process files in parallel
     with ThreadPoolExecutor(max_workers=num_cpus) as executor:
         # List only .txt files from the directory
         txt_files = [file for file in os.listdir(source_directory) if file.endswith('.txt')]
         # Submit tasks to the executor
         futures = [executor.submit(process_file, source_directory, target_directory, labels_of_interest, file) for file in txt_files]
 
-        # Wait for all futures to complete
+        # wait for all futures to complete
         for future in futures:
             future.result()
 

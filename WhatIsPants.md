@@ -110,18 +110,36 @@ Dataset containing all 12,701 labelled images was split into:
 
 ```python
 import os
-from subset_training_data import setup_dirs, copy_files_in_parallel
+import importlib
+import subset_training_data
+importlib.reload(subset_training_data)
+from subset_training_data import set_up_target_dirs, copy_files_in_parallel
 
 # define working directory and subset size
 WORKDIR = '.'
 subset_size = 12701
 
+num_train_labels = round(0.8 * subset_size)
+num_val_labels = round(0.1 * subset_size)
+
+basedir = os.path.join(WORKDIR, 'datasets', 'deepfashion')
+labels_source_dir = os.path.join(basedir, 'labels')
+images_source_dir = os.path.join(basedir, 'images_fullres')
+
 # setup directories
-dirs = setup_dirs(WORKDIR, subset_size)
-labels_source_dir, images_source_dir, train_dir, val_dir, test_dir, num_train_labels, num_val_labels, num_test_labels = dirs
+train_dir, val_dir, test_dir = set_up_target_dirs(basedir)
 
 # copy files in parallel
-copy_files_in_parallel(labels_source_dir, images_source_dir, train_dir, val_dir, test_dir, num_train_labels, num_val_labels, num_test_labels, subset_size)
+copy_files_in_parallel(
+    labels_source_dir,
+    images_source_dir,
+    train_dir,
+    val_dir,
+    test_dir,
+    num_train_labels,
+    num_val_labels,
+    subset_size
+)
 
 ```
 
