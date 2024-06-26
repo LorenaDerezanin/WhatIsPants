@@ -16,7 +16,7 @@ jupyter:
 # What is pants?
 
 
-We started this project to understand how segmentation models work. Identifying and segmenting pants in an image is a fairly easy task for humans — we can do it with almost 100% accuracy. But how well can machines do this task? To answer this existential question, we decided to train a segmentation model and run some predictions. Our first choice was the Ultralytics YOLOv8 segmentation model, because it's well-documented, open-source, and looks quite promising. To read more about the whole project, please check: 
+I have started this project to understand how segmentation models work. Identifying and segmenting pants in an image is a fairly easy task for humans — we can do it with almost 100% accuracy. But how well can machines do this task? To answer this existential question, I decided to train a segmentation model and run some predictions. My first choice was the Ultralytics YOLOv8 segmentation model, because it's well-documented, open-source, and looks quite promising. To read more about the whole project, please check: 
 
 
 
@@ -55,18 +55,18 @@ As our initial dataset we used the Deep Fashion MultiModal dataset: https://gith
 ```
 
 ```python
-# Unzip the downloaded segmentation labels
+# unzip the downloaded segmentation labels
 !rm -rf datasets/deepfashion/segm
 !mkdir -p datasets/deepfashion
 !unzip -qo segm.zip -d datasets/deepfashion/
 ```
 
 ```python
-# Remove data from target directory in preparation for unzipping 
+# remove data from target directory in preparation for unzipping 
 !rm -rf datasets/deepfashion/images
-# Unzip the downloaded images
-# This takes about 2 minutes.
-# The -q flag makes it produce no output to prevent spamming the notebook
+# unzip the downloaded images
+# this takes about 2 minutes
+# -q flag makes it produce no output to prevent spamming the notebook
 !unzip -q images.zip -d datasets/deepfashion/
 ```
 
@@ -179,6 +179,10 @@ To enrich a very uniform initial dataset, we supplemented it with LVIS (Large Vo
 to create a more diverse set and prevent overfitting.  
 * LVIS is based on the COC0 2017 train, val and test image sets (~160k images with ~2M instance annotations, and 1203 categories).
 
+```python
+# get LVIS dataset
+# how did we download lvis
+```
 
 ### Copy LVIS images into dir to be subsetted
 
@@ -194,9 +198,9 @@ import subprocess
 from subset_lvis_pants_labels import subset_labels
 
 # define source and target dirs for training and validation sets
-train_source_directory = "datasets/lvis/labels/train2017/"
+train_source_directory = "datasets/lvis_pants/labels/train2017/"
 train_target_directory = "datasets/lvis_pants/labels/train2017/"
-val_source_directory = "datasets/lvis/labels/val2017/"
+val_source_directory = "datasets/lvis_pants/labels/val2017/"
 val_target_directory = "datasets/lvis_pants/labels/val2017/"
 
 # subset the training set
