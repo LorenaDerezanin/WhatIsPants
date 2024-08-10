@@ -21,6 +21,53 @@ function showSelectedPhoto(event) {
 
 function uploadPhoto() {
     var file = document.getElementById('photo').files[0];
+    console.log('Selected file:', file.name);
+    var maxFileSizeAfterCompressionBytes = 1000 * 1000;  // 1 MB
+    compressImageToJPEG(file, maxFileSizeAfterCompressionBytes, uploadFile);
+}
+
+function compressImageToJPEG(file, maxSize, callback) {
+    console.log(
+        'Compressing image to JPEG: ', file.name,
+        'original size: ', file.size, 'bytes',
+        'max size:', maxSize, 'bytes');
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onload = function(event) {
+        const img = new Image();
+        img.src = event.target.result;
+
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            let quality = 1.0;
+            let qualityStep = 0.05;
+
+            function compress() {
+                canvas.toBlob(function(blob) {
+                    console.log('Image size after compression:', blob.size);
+                    if (blob.size > maxSize && quality > qualityStep) {
+                        quality -= qualityStep;
+                        console.log('Retrying compression with quality:', quality);
+                        compress(); // Retry with lower quality
+                    } else {
+                        console.log('Final image size:', blob.size, 'Quality:', quality);
+                        callback(blob);
+                    }
+                }, 'image/jpeg', quality);
+            }
+
+            compress();
+        };
+    };
+}
+
+function uploadFile(file) {
     var reader = new FileReader();
     var uploadButton = document.querySelector('.form-container button');
     var uploadButtonOriginalText = uploadButton.textContent;
