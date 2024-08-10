@@ -13,6 +13,7 @@ Install
 
 To start the API / backend server, run:
 ```bash
+cd app
 sam build --use-container --cached --parallel && \
   sam local start-api --host 0.0.0.0
 ```
@@ -23,7 +24,7 @@ sam build --use-container --cached --parallel && \
   devices on your local network.
   * This is useful for testing the frontend on a mobile device.
 
-You can test the backend server by, running the following `curl` command,
+You can test the backend server by running the following `curl` command,
 or read on to test it using an actual web page .
 ```bash
 curl -v POST \
@@ -54,13 +55,14 @@ and paste them below.
 aws configure --profile <profile-name>                  
   AWS Access Key ID [None]: <copy this from the AWS Console>
   AWS Secret Access Key [None]: <copy this from the AWS Console>
-  Default region name [None]: eu-central-1  # This is Frankfurt, feel free to choose another region
+  Default region name [None]: eu-west-1  # This is Ireland, feel free to choose another region
   Default output format [None]: json
 ```
 
 ### Run guided deployment using `sam deploy`
 Run the `sam deploy --guided` wizard using the `<profile-name>` created above.
 ```bash
+cd app
 sam build --use-container --cached --parallel && \
   AWS_PROFILE=<profile-name> sam deploy --guided
 
@@ -73,7 +75,7 @@ sam build --use-container --cached --parallel && \
             Setting default arguments for 'sam deploy'
             =========================================
             Stack Name [whatispants]: 
-            AWS Region [eu-central-1]: 
+            AWS Region [eu-west-1]: 
             #Shows you resources changes to be deployed and require a 'Y' to initiate deploy
             Confirm changes before deploy [Y/n]: n
             #SAM needs permission to be able to create roles to connect to the resources in your template

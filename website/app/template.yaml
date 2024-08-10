@@ -9,7 +9,14 @@ Description: >
 Globals:
   Function:
     Timeout: 30  # 30 seconds
-    MemorySize: 3008  # 10GB is the maximum memory size for Lambda functions
+    # Allegedly, the maximum memory size for Lambda functions is 10GB
+    # but when running `sam deploy`, I get the error
+    # Resource handler returned message: "'MemorySize' value failed to satisfy constraint: Member must have value less
+    # than or equal to 3008 (Service: Lambda, Status Code: 400, (...), HandlerErrorCode: InvalidRequest)"
+    # See also: https://repost.aws/questions/QUKruWYNDYTSmP17jCnIz6IQ/unable-to-set-lambda-memory-over-3008mb
+    # I couldn't open a support ticket, because support costs $30/month.
+    # So the maximum I can set here is ~3 GB.
+    MemorySize: 3008
 
     Tracing: Active
   Api:
