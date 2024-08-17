@@ -1,4 +1,4 @@
-ultralytics==8.2.18
+ultralytics==8.2.78
 supervision==0.20.0
 tensorflow==2.16.1
 tensorboard==2.16.2
