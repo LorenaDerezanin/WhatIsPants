@@ -64,12 +64,12 @@ As our initial dataset we used the Deep Fashion MultiModal dataset: https://gith
 
 ```python
 # remove data from target directory in preparation for unzipping 
-rm -rf datasets/deepfashion/images
+!rm -rf datasets/deepfashion/images
 
 # unzip the downloaded images
 # this takes about 2 minutes
 # tqdm is used to show a progress bar
-unzip images.zip -d datasets/deepfashion/ | tqdm --desc extracted --unit files --unit_scale --total 44097 > /dev/null
+!unzip images.zip -d datasets/deepfashion/ | tqdm --desc extracted --unit files --unit_scale --total 44097 > /dev/null
 ```
 
 ### Convert masks to contours format that YOLO can process
