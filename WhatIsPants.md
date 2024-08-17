@@ -72,10 +72,6 @@ As our initial dataset we used the Deep Fashion MultiModal dataset: https://gith
 !unzip images.zip -d datasets/deepfashion/ | tqdm --desc extracted --unit files --unit_scale --total 44097 > /dev/null
 ```
 
-```python
-!mv datasets/deepfashion/images datasets/deepfashion/images_fullres
-```
-
 ### Convert masks to contours format that YOLO can process
 
 ```python
@@ -137,7 +133,7 @@ num_val_labels = round(0.1 * subset_size)
 
 basedir = os.path.join(WORKDIR, 'datasets', 'deepfashion')
 labels_source_dir = os.path.join(basedir, 'labels')
-images_source_dir = os.path.join(basedir, 'images_fullres')
+images_source_dir = os.path.join(basedir, 'images')
 
 # setup directories
 train_dir, val_dir, test_dir = set_up_target_dirs(basedir)
