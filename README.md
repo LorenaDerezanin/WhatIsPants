@@ -98,6 +98,10 @@ a home base, a bat, and a belt, but no pants.
 
 
 ### TO DO:
+- [ ] 2024-08-17: the notebook works up until "inspect annotations" after "subset data into `train`..."
+  - The inspect annotations bit should probably look at deepfash annotations first
+  - We didn't seem to document how to download the LVIS dataset yet
+  - `lvis.yaml` itself seems to contain an embedded script for downloading it
 - [ ] Google Colab uses `python 3.10.12`, so we should use that in our conda environment
       and downgrade some dependencies accordingly:
     ```python
