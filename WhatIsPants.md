@@ -65,10 +65,11 @@ As our initial dataset we used the Deep Fashion MultiModal dataset: https://gith
 ```bash
 # remove data from target directory in preparation for unzipping 
 !rm -rf datasets/deepfashion/images
+
 # unzip the downloaded images
 # this takes about 2 minutes
-# -q flag makes it produce no output to prevent spamming the notebook
-!unzip -q images.zip -d datasets/deepfashion/
+# tqdm is used to show a progress bar
+!unzip images.zip -d datasets/deepfashion/ | tqdm --desc extracted --unit files --unit_scale --total 44097 > /dev/null
 ```
 
 ```python
@@ -78,9 +79,10 @@ As our initial dataset we used the Deep Fashion MultiModal dataset: https://gith
 ### Convert masks to contours format that YOLO can process
 
 ```python
+import concurrent.futures
 import numpy as np
 import os
-from concurrent.futures import ThreadPoolExecutor
+from tqdm import tqdm
 
 # import the mask2contour function 
 from mask_2_contour import mask2contour
@@ -95,11 +97,21 @@ pants_mask_color = np.array([211, 211, 211])
 # Get the number of available CPUs
 num_cpus = os.cpu_count()
 
+mask_files = os.listdir(masks_dir)
+
 # load labelled mask pngs
 # parallelize processing
-with ThreadPoolExecutor(max_workers=num_cpus) as executor:
-    for mask_filename in os.listdir(masks_dir):
-        executor.submit(mask2contour, mask_filename, masks_dir, labels_dir, pants_mask_color)
+with tqdm(total=len(mask_files)) as pbar:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_cpus) as executor:
+        futures = {
+            executor.submit(mask2contour, mask_filename, masks_dir, labels_dir, pants_mask_color): mask_filename
+            for mask_filename in mask_files
+        }
+        results = {}
+        for future in concurrent.futures.as_completed(futures):
+                arg = futures[future]
+                results[arg] = future.result()
+                pbar.update(1)
 ```
 
 ## Subset data into `train`, `val` and `test` sets
