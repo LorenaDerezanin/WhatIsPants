@@ -23,13 +23,13 @@ I have started this project to understand how segmentation models work. Identify
 ## Setting up Google Colab env
 If you're running this as a Jupyter notebook from an already cloned git repository, feel free to skip this section.
 
-```bash
+```python
 # clone the repo
 !git clone https://github.com/LorenaDerezanin/WhatIsPants.git
 %cd WhatIsPants
 ```
 
-```bash
+```python
 # install requirements with pip
 !pip install -r requirements.txt --no-cache-dir
 ```
@@ -40,21 +40,21 @@ If you're running this as a Jupyter notebook from an already cloned git reposito
 As our initial dataset we used the Deep Fashion MultiModal dataset: https://github.com/yumingj/DeepFashion-MultiModal    
     * from 44,096 jpg images, 12,701 are annotated (classes, segmentation masks and bounding boxes)
 
-```bash
+```python
 # download image files
 !wget --header 'Sec-Fetch-Dest: document' \
   'https://drive.usercontent.google.com/download?id=1U2PljA7NE57jcSSzPs21ZurdIPXdYZtN&export=download&authuser=0&confirm=t&uuid=115a0cd6-8ddb-427b-9343-62b76c4d939c&at=APZUnTWiXg4LlG3A7QPA5DmjASX8%3A1715537567680' \
   --output-document 'images.zip'
 ```
 
-```bash
+```python
 # download annotation labels
 !wget --header 'Sec-Fetch-Dest: document' \
   'https://drive.usercontent.google.com/download?id=1r-5t-VgDaAQidZLVgWtguaG7DvMoyUv9&export=download&authuser=0&confirm=t&uuid=b445e6d2-634c-4b59-96c8-4455c6f117a5&at=APZUnTV7OltdPbT0OB1lUK1FhJO8%3A1715537716467' \
   --output-document 'segm.zip'
 ```
 
-```bash
+```python
 # unzip the downloaded segmentation labels
 !rm -rf datasets/deepfashion/segm
 !rm -rf datasets/deepfashion/labels
@@ -62,14 +62,14 @@ As our initial dataset we used the Deep Fashion MultiModal dataset: https://gith
 !unzip -qo segm.zip -d datasets/deepfashion/
 ```
 
-```bash
+```python
 # remove data from target directory in preparation for unzipping 
-!rm -rf datasets/deepfashion/images
+rm -rf datasets/deepfashion/images
 
 # unzip the downloaded images
 # this takes about 2 minutes
 # tqdm is used to show a progress bar
-!unzip images.zip -d datasets/deepfashion/ | tqdm --desc extracted --unit files --unit_scale --total 44097 > /dev/null
+unzip images.zip -d datasets/deepfashion/ | tqdm --desc extracted --unit files --unit_scale --total 44097 > /dev/null
 ```
 
 ### Convert masks to contours format that YOLO can process
