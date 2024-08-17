@@ -6,6 +6,9 @@ from ultralytics import YOLO
 # Set up argument parser
 parser = argparse.ArgumentParser(description='Train YOLO model on custom dataset.')
 parser.add_argument('--epochs', type=int, default=5, help='Number of epochs to train the model.')
+parser.add_argument('--model_name', type=str, default="yolov8s-seg.pt", help='Size of the model to train.')
+parser.add_argument('--out_dir', type=str, default="", help='Output directory for weights and metrics on trained model')
+
 args = parser.parse_args()
 
 # Check if GPU is working or not
@@ -17,6 +20,6 @@ print(
 
 # train custom model
 print(f"Training on {args.epochs} epochs")
-model = YOLO("yolov8x-seg.pt")
-model.train(data='train_yolo_pants.yaml', epochs=args.epochs, cfg='pants_config.yaml')
+model = YOLO(args.model_name)
+model.train(data='train_yolo_pants.yaml', epochs=args.epochs, project=args.out_dir, name=f"{args.model_name}_ep{args.epochs}")
 print("done")
