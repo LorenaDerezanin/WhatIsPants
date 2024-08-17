@@ -57,7 +57,8 @@ As our initial dataset we used the Deep Fashion MultiModal dataset: https://gith
 ```bash
 # unzip the downloaded segmentation labels
 !rm -rf datasets/deepfashion/segm
-!mkdir -p datasets/deepfashion
+!rm -rf datasets/deepfashion/labels
+!mkdir -p datasets/deepfashion/labels
 !unzip -qo segm.zip -d datasets/deepfashion/
 ```
 
