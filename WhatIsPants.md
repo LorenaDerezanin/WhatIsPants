@@ -16,7 +16,7 @@ jupyter:
 # What is pants?
 
 
-I have started this project to understand how segmentation models work. Identifying and segmenting pants in an image is a fairly easy task for humans — we can do it with almost 100% accuracy. But how well can machines do this task? To answer this existential question, I decided to train a segmentation model and run some predictions. My first choice was the Ultralytics YOLOv8 segmentation model, because it's well-documented, open-source, and looks quite promising. To read more about the whole project, please check: 
+I have started this project to understand how segmentation models work. Identifying and segmenting pants in an image is a fairly easy task for humans — we can do it with almost 100% accuracy. But how well can machines do this task? To answer this existential question, I decided to train a segmentation model and run some predictions. My first choice was the Ultralytics YOLOv8 segmentation model, because it's well-documented, open-source, and looks very promising. To read more about the whole project, please check: 
 
 
 
@@ -37,8 +37,20 @@ If you're running this as a Jupyter notebook from an already cloned git reposito
 ## Prepare dataset
 
 
-As our initial dataset we used the Deep Fashion MultiModal dataset: https://github.com/yumingj/DeepFashion-MultiModal    
+As our initial dataset we will use the Deep Fashion MultiModal dataset: https://github.com/yumingj/DeepFashion-MultiModal    
     * from 44,096 jpg images, 12,701 are annotated (classes, segmentation masks and bounding boxes)
+
+```python
+import os
+import pathlib
+# Set an environment variable for the project home
+os.environ["PROJECT_HOME"] = os.path.abspath("")
+```
+
+```python
+%env PROJECT_HOME
+
+```
 
 ```python
 # download image files
@@ -188,15 +200,48 @@ To enrich a very uniform initial dataset, we supplemented it with LVIS (Large Vo
 to create a more diverse set and prevent overfitting.  
 * LVIS is based on the COC0 2017 train, val and test image sets (~160k images with ~2M instance annotations, and 1203 categories).
 
+
+# Download LVIS Data
+
 ```python
-# get LVIS dataset
-# how did we download lvis
+!echo $PROJECT_HOME
+!mkdir -p "$PROJECT_HOME/datasets/lvis"
+%cd "{os.environ['PROJECT_HOME']}/datasets/lvis"
+```
+
+```python
+!wget -P datasets/lvis http://images.cocodataset.org/zips/train2017.zip
+```
+
+```python
+!wget -P datasets/lvis http://images.cocodataset.org/zips/val2017.zip
+```
+
+```python
+!wget -P datasets/lvis https://github.com/ultralytics/yolov5/releases/download/v1.0/lvis-labels-segments.zip
 ```
 
 ### Copy LVIS images into dir to be subsetted
 
 ```python
-cp -r ~/datasets/lvis/images datasets/lvis_pants/
+!unzip train2017.zip -d . | tqdm --desc extracted --unit files --unit_scale --total 118287 > /dev/null 
+!mv train2017 images
+!unzip val2017.zip -d . | tqdm --desc extracted --unit files --unit_scale --total 5000 > /dev/null
+!mv val2017/* images/
+!rm -r val2017
+```
+
+```python
+# Unzip labels
+!unzip lvis-labels-segments.zip -d . | tqdm --desc extracted --unit files --unit_scale --total 119018 > /dev/null
+!mv lvis/labels/train2017 labels
+!mv lvis/labels/val2017/* labels/
+!rm -rf lvis
+!mkdir -p lvis_pants/labels
+```
+
+```python
+%cd {os.environ['PROJECT_HOME']}
 ```
 
 ### Subset only pants labels
@@ -207,28 +252,16 @@ import subprocess
 from subset_lvis_pants_labels import subset_labels
 
 # define source and target dirs for training and validation sets
-train_source_directory = "datasets/lvis_pants/labels/train2017/"
-train_target_directory = "datasets/lvis_pants/labels/train2017/"
-val_source_directory = "datasets/lvis_pants/labels/val2017/"
-val_target_directory = "datasets/lvis_pants/labels/val2017/"
+source_directory = "datasets/lvis/labels"
+target_directory = "datasets/lvis_pants/labels"
 
-# subset the training set
-subset_labels(train_source_directory, train_target_directory)
+subset_labels(source_directory, target_directory)
 
-# subset the validation set
-subset_labels(val_source_directory, val_target_directory)
+```
 
-# check number of resulting non-empty labels
-def count_non_empty_files(directory):
-    result = subprocess.run(['find', directory, '-type', 'f', '-size', '+0c', '|', 'wc', '-l'], capture_output=True, text=True, shell=True)
-    return int(result.stdout.strip())
-
-train_count = count_non_empty_files(train_target_directory)
-val_count = count_non_empty_files(val_target_directory)
-
-print(f"Number of non-empty label files in training set: {train_count}")
-print(f"Number of non-empty label files in validation set: {val_count}")
-
+```python
+# Check number of resulting non-empty label files (i.e. which contain pants)
+!find "$PROJECT_HOME/datasets/lvis_pants/labels" -type f -size +0c | wc -l
 ```
 
 ### Keep only as many pantsless images as there are pantsful images
@@ -279,20 +312,22 @@ print(f"Total deleted images: {deleted_files_count}")
 
 ### Prepare `train` configuration yaml file 
 
-We kept only one class in the config yaml (0: This is pants) and removed other object classes.   
+We kept only one class in the config yaml (0: This is pants) and removed other object classes. 
+We are now left with `8925` labels in train2017 set, and `369` labels in val2017 set.
 Tensorboard set to `true` in yaml to monitor model training and validation performance.
 
-
-## Run the training
+<!-- #region jp-MarkdownHeadingCollapsed=true -->
+##### Run the training
 
 We ran multiple training runs with diffferent configurations:   
     * yolo model sizes: s, m, x    
-    * number of epochs: 5, 50, 100    
+    * number of epochs: 5, 25, 50, 100    
     * total number of runs: 9    
     
 We found that the precision and recall reached a plateau both in train and val stages around 50th epoch and remained fairly stable until 100th epoch. Same goes for box, class and segmetation loss. Model size s performed a bit more poorly than the larger models.   
 Comparing the same metrics between model sizes m and x for the same number of epochs was only marginally higher for the larger model x.    
 Based on these metrics, we concluded that yolo model size m with 50 epochs is an optimal strategy for this task.   
+<!-- #endregion -->
 
 ```python
 # import train function
