@@ -16,7 +16,7 @@ jupyter:
 # What is pants?
 
 
-I have started this project to understand how segmentation models work. Identifying and segmenting pants in an image is a fairly easy task for humans — we can do it with almost 100% accuracy. But how well can machines do this task? To answer this existential question, I decided to train a segmentation model and run some predictions. My first choice was the Ultralytics YOLOv8 segmentation model, because it's well-documented, open-source, and looks very promising. To read more about the whole project, please check: 
+I have started this project to understand how segmentation models work. Identifying and segmenting pants in an image is a fairly easy task for humans — we can do it with almost 100% accuracy. But how well can machines do this task? To answer this existential question, I decided to train a segmentation model and run some predictions. My first choice was the Ultralytics YOLOv8 segmentation model, because it's well-documented, open-source, and looks very promising. To read more about the whole project, check my Medium article: 
 
 
 
@@ -195,8 +195,8 @@ plot_image_grid(
 
 ## Find and prepare a more diverse dataset
 
-After a few training and test runs, we noticed that our model is overfitting and not generalizing well.   
-To enrich a very uniform initial dataset, we supplemented it with LVIS (Large Vocabulary Instance Segmentation) dataset: https://www.lvisdataset.org/dataset   
+After a few training and test runs, it became obvious that our model is overfitting and not generalizing well.   
+To enrich a very uniform initial dataset, let's supplement it with LVIS (Large Vocabulary Instance Segmentation) dataset: https://www.lvisdataset.org/dataset   
 to create a more diverse set and prevent overfitting.  
 * LVIS is based on the COC0 2017 train, val and test image sets (~160k images with ~2M instance annotations, and 1203 categories).
 
@@ -261,7 +261,7 @@ subset_labels(source_directory, target_directory)
 
 ```python
 # Check number of resulting non-empty label files (i.e. which contain pants)
-!find "$PROJECT_HOME/datasets/lvis_pants/labels" -type f -size +0c | wc -l
+!find "$PROJECT_HOME/datasets/lvis_pants/labels" -type f -size +0k | wc -l
 ```
 
 ### Keep only as many pantsless images as there are pantsful images
@@ -269,28 +269,24 @@ subset_labels(source_directory, target_directory)
 ```python
 from remove_superfluous_empty_labels import remove_empty_labels
 
-# define dirs for training and validation sets
-train_labels_directory = "datasets/lvis_pants/labels/train2017"
-train_images_directory = "datasets/lvis_pants/images/train2017
-val_labels_directory = "datasets/lvis_pants/labels/val2017"
-val_images_directory = "datasets/lvis_pants/images/val2017"
+# define source and target dirs
+source_images_directory = "datasets/lvis/images"
+source_labels_directory = "datasets/lvis_pants/labels"
 
-# remove empty labels in training set
-remove_empty_labels(train_labels_directory, train_images_directory)
 
-# remove empty labels in validation set
-remove_empty_labels(val_labels_directory, val_images_directory)
+# randomly select the same number of pantless labels as pantsful, 
+# and remove the rest of the empty labels and corresponding images in the set
+remove_empty_labels(source_labels_directory, source_images_directory)
+
 
 # verify that empty labels have been removed by counting remaining label files
 def count_files(directory):
     return len([f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))])
 
-train_label_count = count_files(train_labels_directory)
-val_label_count = count_files(val_labels_directory)
+label_count = count_files(source_labels_directory)
 
-print(f"Number of label files in training set after removal: {train_label_count}")
-print(f"Number of label files in validation set after removal: {val_label_count}")
 
+print(f"Number of label files in dataset after removal: {label_count}")
 ```
 
 ### Remove images which have no corresponding label file
@@ -310,13 +306,23 @@ deleted_files_count = delete_unlabeled_images(images_dir, labels_dir)
 print(f"Total deleted images: {deleted_files_count}")
 ```
 
+## Split lvis dataset into train and val
+
+```python
+# define dirs for training and validation sets
+train_labels_directory = "datasets/lvis_pants/labels/train"
+train_images_directory = "datasets/lvis_pants/images/train"
+val_labels_directory = "datasets/lvis_pants/labels/val"
+val_images_directory = "datasets/lvis_pants/images/val"
+```
+
 ### Prepare `train` configuration yaml file 
 
 We kept only one class in the config yaml (0: This is pants) and removed other object classes. 
 We are now left with `8925` labels in train2017 set, and `369` labels in val2017 set.
 Tensorboard set to `true` in yaml to monitor model training and validation performance.
 
-<!-- #region jp-MarkdownHeadingCollapsed=true -->
+
 ##### Run the training
 
 We ran multiple training runs with diffferent configurations:   
@@ -327,7 +333,6 @@ We ran multiple training runs with diffferent configurations:
 We found that the precision and recall reached a plateau both in train and val stages around 50th epoch and remained fairly stable until 100th epoch. Same goes for box, class and segmetation loss. Model size s performed a bit more poorly than the larger models.   
 Comparing the same metrics between model sizes m and x for the same number of epochs was only marginally higher for the larger model x.    
 Based on these metrics, we concluded that yolo model size m with 50 epochs is an optimal strategy for this task.   
-<!-- #endregion -->
 
 ```python
 # import train function
