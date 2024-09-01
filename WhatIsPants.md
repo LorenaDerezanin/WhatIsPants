@@ -267,7 +267,9 @@ subset_labels(source_directory, target_directory)
 ### Keep only as many pantsless images as there are pantsful images
 
 ```python
-from remove_superfluous_empty_labels import remove_empty_labels
+import importlib
+import remove_superfluous_empty_labels
+importlib.reload(remove_superfluous_empty_labels)
 
 # define source and target dirs
 source_images_directory = "datasets/lvis/images"
@@ -276,17 +278,13 @@ source_labels_directory = "datasets/lvis_pants/labels"
 
 # randomly select the same number of pantless labels as pantsful, 
 # and remove the rest of the empty labels and corresponding images in the set
-remove_empty_labels(source_labels_directory, source_images_directory)
+remove_superfluous_empty_labels.remove_empty_labels(source_labels_directory, source_images_directory)
 
+```
 
+```python
 # verify that empty labels have been removed by counting remaining label files
-def count_files(directory):
-    return len([f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))])
-
-label_count = count_files(source_labels_directory)
-
-
-print(f"Number of label files in dataset after removal: {label_count}")
+!ls "$PROJECT_HOME/datasets/lvis_pants/labels"  | wc -l
 ```
 
 ### Remove images which have no corresponding label file
@@ -298,8 +296,8 @@ We observed that the LVIS dataset contains images with pants where pants are not
 from delete_labelless_images import delete_unlabeled_images
 
 # Define the directories
-images_dir = 'datasets/lvis_pants/images/train2017'
-labels_dir = 'datasets/lvis_pants/labels/train2017'
+images_dir = 'datasets/lvis/images'
+labels_dir = 'datasets/lvis_pants/labels'
 
 # Call the function and get the count of deleted files
 deleted_files_count = delete_unlabeled_images(images_dir, labels_dir)
@@ -309,23 +307,55 @@ print(f"Total deleted images: {deleted_files_count}")
 ## Split lvis dataset into train and val
 
 ```python
+import os
+import importlib
+import subset_training_data
+importlib.reload(subset_training_data)
+from subset_training_data import set_up_target_dirs, copy_files_in_parallel
+
 # define dirs for training and validation sets
 train_labels_directory = "datasets/lvis_pants/labels/train"
 train_images_directory = "datasets/lvis_pants/images/train"
 val_labels_directory = "datasets/lvis_pants/labels/val"
 val_images_directory = "datasets/lvis_pants/images/val"
+
+
+# define subset size
+
+subset_size = 9292
+
+num_train_labels = round(0.8 * subset_size)
+num_val_labels = round(0.1 * subset_size)
+
+basedir = os.path.join('datasets')
+labels_source_dir = os.path.join(basedir, 'lvis_pants/labels')
+images_source_dir = os.path.join(basedir, 'lvis/images')
+
+# setup directories
+train_dir, val_dir, test_dir = set_up_target_dirs(basedir)
+
+# copy files in parallel
+copy_files_in_parallel(
+    labels_source_dir,
+    images_source_dir,
+    train_dir,
+    val_dir,
+    test_dir,
+    num_train_labels,
+    num_val_labels,
+    subset_size
+)
 ```
 
 ### Prepare `train` configuration yaml file 
 
 We kept only one class in the config yaml (0: This is pants) and removed other object classes. 
-We are now left with `8925` labels in train2017 set, and `369` labels in val2017 set.
+We are now left with `7434` labels in train set, and `929` labels in val set.
 Tensorboard set to `true` in yaml to monitor model training and validation performance.
 
 
 ##### Run the training
-
-We ran multiple training runs with diffferent configurations:   
+  
     * yolo model sizes: s, m, x    
     * number of epochs: 5, 25, 50, 100    
     * total number of runs: 9    

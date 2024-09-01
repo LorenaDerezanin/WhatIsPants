@@ -10,6 +10,5 @@ def delete_unlabeled_images(images_directory, labels_directory):
     for image_base_name in images_without_labels:
         image_path = os.path.join(images_directory, image_base_name + '.jpg')
         os.remove(image_path)
-        print(f"Deleted image: {image_path}")
         deleted_files_count += 1
     return deleted_files_count

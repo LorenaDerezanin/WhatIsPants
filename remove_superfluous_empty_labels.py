@@ -12,7 +12,7 @@ def count_non_empty_labels(labels_directory):
     return non_empty_count
 
 
-def remove_empty_labels(labels_directory, images_direcgstory):
+def remove_empty_labels(labels_directory, images_directory):
     label_files = [f for f in os.listdir(labels_directory) if f.endswith('.txt')]
 
     # count the number of non-empty label files
@@ -34,7 +34,8 @@ def remove_empty_labels(labels_directory, images_direcgstory):
         if os.path.getsize(label_path) == 0:
             if label_file not in labels_to_keep:
                 os.remove(label_path)
-                print(f"Removed empty label file: {label_path}")
             elif not os.path.exists(image_path):
                 os.remove(label_path)
                 print(f"Removed empty label file without corresponding image: {label_path}")
+
+
