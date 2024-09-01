@@ -1,6 +1,6 @@
 # What is Pants?
 
-### add banner
+![Banner](website/whatispants_gitbanner.png)
 
 ### add description
 
