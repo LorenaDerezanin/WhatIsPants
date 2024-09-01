@@ -8,7 +8,7 @@ Description: >
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 30  # 30 seconds
+    Timeout: 900  # 15 minutes - the max according to https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtime-environment.html#runtimes-lifecycle-ib
     # Allegedly, the maximum memory size for Lambda functions is 10GB
     # but when running `sam deploy`, I get the error
     # Resource handler returned message: "'MemorySize' value failed to satisfy constraint: Member must have value less

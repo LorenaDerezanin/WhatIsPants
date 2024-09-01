@@ -13,3 +13,10 @@
   package size (without the model) is over 900 MB. Only torch is 321 MB.
   - Yes, I've already extracted the model into a separate file, but the
     dependencies are still too large.
+- I reverted the attempt, but increased the function timeout from 30s to 15
+  minutes, which, according to [the
+  docs](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtime-environment.html#runtimes-lifecycle-ib),
+  is the maximum.
+  > The `Init` phase is limited to 10 seconds. If all three tasks do not
+  > complete within 10 seconds, Lambda retries the `Init` phase at the time
+  > of the first function invocation with the configured function timeout.
