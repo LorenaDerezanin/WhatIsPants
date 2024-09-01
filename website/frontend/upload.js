@@ -79,7 +79,7 @@ function uploadFile(file) {
         // For local development, assuming the API is running on the same machine on port 3000
         // const apiUrl = `http://${window.location.hostname}:3000/whatispants`
         // Use your API Gateway endpoint URL here
-        const apiUrl = 'https://1pt6rewihj.execute-api.eu-west-1.amazonaws.com/Prod/whatispants/'
+        const apiUrl = 'https://tr5ylrpyza.execute-api.eu-west-1.amazonaws.com/Prod/whatispants/'
 
         // Change button text
         uploadButton.textContent = "Checking if pants...";
