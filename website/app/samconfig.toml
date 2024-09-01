@@ -17,8 +17,9 @@ lint = true
 capabilities = "CAPABILITY_IAM"
 region = "eu-west-1"
 resolve_s3 = true
+s3_bucket = "whatispants"
 s3_prefix = "whatispants"
-image_repositories = ["WhatIsPantsFunction=533267002582.dkr.ecr.eu-west-1.amazonaws.com/whatispantsc5f6204e/whatispantsfunction70cf5cc7repo"]
+image_repositories = []
 
 [default.sync.parameters]
 watch = true

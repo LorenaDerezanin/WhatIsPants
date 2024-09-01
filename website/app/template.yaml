@@ -29,19 +29,17 @@ Resources:
   WhatIsPantsFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      PackageType: Image
+      CodeUri: whatispants/
+      Handler: app.lambda_handler
+      Runtime: python3.11
       Architectures:
-        - arm64
+      - arm64
       Events:
         ImageUpload:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             Path: /whatispants
             Method: post
-    Metadata:
-      DockerTag: whatispants-lambda
-      DockerContext: .
-      Dockerfile: Dockerfile
 
   ApplicationResourceGroup:
     Type: AWS::ResourceGroups::Group
