@@ -3,6 +3,8 @@ from dataclasses import dataclass
 from PIL import Image
 from ultralytics import YOLO
 
+model = YOLO("lvis_fash_m_50.pt")
+
 
 @dataclass(frozen=True, kw_only=True, eq=True)
 class InferenceResult:
@@ -10,7 +12,7 @@ class InferenceResult:
     annotated_image: Image
 
 
-def infer(input_image: Image, model: YOLO) -> InferenceResult:
+def infer(input_image: Image) -> InferenceResult:
     print("Running prediction")
     results = model.predict(input_image)
     print("Prediction done")

@@ -7,7 +7,7 @@ RUN yum install -y mesa-libGL gcc
 COPY whatispants/app.py ${LAMBDA_TASK_ROOT}
 COPY whatispants/inference.py ${LAMBDA_TASK_ROOT}
 COPY whatispants/requirements.txt ${LAMBDA_TASK_ROOT}
-COPY ../models/lvis_fash_m_50.pt ${LAMBDA_TASK_ROOT}
+COPY whatispants/lvis_fash_m_50.pt ${LAMBDA_TASK_ROOT}
 
 # Install Python dependencies
 RUN pip install -r requirements.txt

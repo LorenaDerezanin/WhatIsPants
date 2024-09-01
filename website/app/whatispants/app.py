@@ -1,28 +1,10 @@
 import base64
-import os
-
-import boto3
 import json
 from io import BytesIO
 
 from PIL import Image, ImageOps
-from ultralytics import YOLO
 
 import inference
-
-
-s3 = boto3.client('s3')
-
-
-def download_model():
-    bucket_name = 'whatispants'
-    key = 'lvis_fash_m_50.pt'
-    download_path = '/tmp/lvis_fash_m_50.pt'
-
-    if not os.path.exists(download_path):
-        s3.download_file(bucket_name, key, download_path)
-
-    return download_path
 
 
 def lambda_handler(event, context):
@@ -73,9 +55,7 @@ def lambda_handler(event, context):
             "body": json.dumps({"error": "Could not decode the image"})
         }
 
-    model_path = download_model()
-    model = YOLO(model_path)
-    inference_result = inference.infer(input_image, model)
+    inference_result = inference.infer(input_image)
     output_image = inference_result.annotated_image
 
     # output_image.show()

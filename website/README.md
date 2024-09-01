@@ -59,18 +59,10 @@ aws configure --profile <profile-name>
   Default output format [None]: json
 ```
 
-### Upload model file to S3
-```bash
-cd app
-# Create the bucket if it does not already exist
-AWS_PROFILE=<profile-name> aws s3 mb s3://whatispants
-# Upload the model file to the bucket
-AWS_PROFILE=<profile-name> aws s3 cp models/lvis_fash_m_50.pt s3://whatispants/lvis_fash_m_50.pt
-```
-
 ### Run guided deployment using `sam deploy`
 Run the `sam deploy --guided` wizard using the `<profile-name>` created above.
 ```bash
+cd app
 sam build --use-container --cached --parallel && \
   AWS_PROFILE=<profile-name> sam deploy --guided
 
