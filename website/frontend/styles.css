@@ -75,13 +75,24 @@ body, html {
   white-space: nowrap;
 }
 
-.result-image {
-  display: none;
-  /* This ensures the image is centered and adapts to the width of the parent container */
+.result-area {
+  /* Inline-block + position: relative so .no-pants-text below can be positioned
+  relative to the rendered image's bounding box, not the surrounding layout. */
+  position: relative;
+  display: inline-block;
   max-width: 100%;
   max-height: 100%;
-  display: flex;
-  justify-content: center;
+  line-height: 0;
+}
+
+.result-image {
+  display: none;
+  /* Constraint goes here, not on .result-area: the wrapper is inline-block with
+  no intrinsic height, so `max-height: 100%` on the image would resolve against
+  the image's own auto-sized box (circular) and tall photos could overflow the
+  60vh region carved out by .centered-content. */
+  max-width: 80vw;
+  max-height: 60vh;
 }
 
 .no-pants-text {
@@ -94,6 +105,9 @@ body, html {
   font-size: 3rem;
   font-family: "Protest Riot", sans-serif;
   font-weight: 400;
+  line-height: 1;
+  pointer-events: none;
+  white-space: nowrap;
 }
 
 @keyframes fadeInZoom {
