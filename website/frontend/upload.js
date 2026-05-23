@@ -1,3 +1,5 @@
+const apiUrl = 'https://jvvu4ej3q3gin4ik5gj7sdbg2e0yyqnt.lambda-url.eu-west-1.on.aws/';
+
 function showSelectedPhoto(event) {
     var file = event.target.files[0];
     var reader = new FileReader();
@@ -76,11 +78,6 @@ function uploadFile(file) {
     var questionMarkOriginalDisplay = 'block';
 
     reader.onloadend = function() {
-        // For local development, assuming the API is running on the same machine on port 3000
-        // const apiUrl = `http://${window.location.hostname}:3000/whatispants`
-        // Use your API Gateway endpoint URL here
-        const apiUrl = 'https://tr5ylrpyza.execute-api.eu-west-1.amazonaws.com/Prod/whatispants/'
-
         // Change button text
         uploadButton.textContent = "Checking if pants...";
         uploadButton.disabled = true;
@@ -137,4 +134,7 @@ function uploadFile(file) {
 
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('photo').onchange = showSelectedPhoto;
+    // Fire a warmup request so the Lambda is warm by the time the user clicks.
+    // On a true cold start this can take 30s+; we don't wait for it.
+    fetch(apiUrl, {method: 'POST', body: 'warmup'}).catch(() => {});
 })
