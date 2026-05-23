@@ -1,3 +1,9 @@
-requests==2.32.3
 ultralytics==8.2.86
-opencv-python-headless==4.9.0.80
+# We want only the headless OpenCV in the Lambda image (no libGL needed).
+# Note: ultralytics declares opencv-python (the GUI variant) as a dependency.
+# opencv-python and opencv-python-headless are separate PyPI distributions —
+# a matching version pin here does NOT make pip skip the GUI variant; both
+# get installed. The Dockerfile runs `pip uninstall -y opencv-python` after
+# this requirements file to keep only the headless variant. cv2 is still
+# importable because opencv-python-headless provides the same module.
+opencv-python-headless==4.11.0.86

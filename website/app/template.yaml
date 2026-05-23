@@ -17,27 +17,23 @@ Globals:
     # I couldn't open a support ticket, because support costs $30/month.
     # So the maximum I can set here is ~3 GB.
     MemorySize: 3008
-
     Tracing: Active
-  Api:
-    TracingEnabled: true
-    Cors:
-      AllowMethods: "'POST'"
-      AllowHeaders: "'*'"
-      AllowOrigin: "'*'"
 Resources:
   WhatIsPantsFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Properties:
       PackageType: Image
       Architectures:
-      - arm64
-      Events:
-        ImageUpload:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-          Properties:
-            Path: /whatispants
-            Method: post
+        - arm64
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowMethods:
+            - POST
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - content-type
     Metadata:
       DockerTag: whatispants-lambda
       DockerContext: .
@@ -57,12 +53,9 @@ Resources:
         Ref: ApplicationResourceGroup
       AutoConfigurationEnabled: 'true'
 Outputs:
-  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-  # Find out more about other implicit resources you can reference within SAM
-  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  WhatIsPantsApi:
-    Description: API Gateway endpoint URL for Prod stage for What is pants function
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/whatispants/"
+  WhatIsPantsFunctionUrl:
+    Description: Lambda Function URL for What is pants
+    Value: !GetAtt WhatIsPantsFunctionUrl.FunctionUrl
   WhatIsPantsFunction:
     Description: What is pants Lambda Function ARN
     Value: !GetAtt WhatIsPantsFunction.Arn
